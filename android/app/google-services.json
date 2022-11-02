@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "1091927884473",
+    "firebase_url": "https://senior-project-2022-16cdc-default-rtdb.firebaseio.com",
+    "project_id": "senior-project-2022-16cdc",
+    "storage_bucket": "senior-project-2022-16cdc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091927884473:android:92c2fc96f24bdfff701168",
+        "android_client_info": {
+          "package_name": "com.example.csun_user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1091927884473-u6vgq6s5s2co3g2q3ecjb1evrb4lrmuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_PqnxD0BZRSdKviCslNYBtb5JSMHpQkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1091927884473-u6vgq6s5s2co3g2q3ecjb1evrb4lrmuf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1091927884473-93k1ifkt0g3k5uu0fgh6v0mkkcs88ksn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.company.csun"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091927884473:android:dbc5bfe1337b4f47701168",
+        "android_client_info": {
+          "package_name": "com.example.uber_copy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1091927884473-u6vgq6s5s2co3g2q3ecjb1evrb4lrmuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_PqnxD0BZRSdKviCslNYBtb5JSMHpQkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1091927884473-u6vgq6s5s2co3g2q3ecjb1evrb4lrmuf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1091927884473-93k1ifkt0g3k5uu0fgh6v0mkkcs88ksn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.company.csun"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
