@@ -6,7 +6,12 @@ import 'package:csun_user/global/global.dart';
 import 'package:csun_user/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+
+import '../infoHandler/app_info.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -17,8 +22,8 @@ class _MainScreenState extends State<MainScreen> {
   final Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController? newGoogleMapController;
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+  static const CameraPosition _center = CameraPosition(
+    target: LatLng(34.24138, -118.52946),
     zoom: 14.4746,
   );
 
@@ -203,24 +208,22 @@ class _MainScreenState extends State<MainScreen> {
     if (_locationPermission == LocationPermission.denied) {
       _locationPermission = await Geolocator.requestPermission();
     }
+
+    if(_locationPermission == LocationPermission.denied || _locationPermission == LocationPermission.deniedForever){
+      openAppSettings();
+    }
   }
 
   locateUserPosition() async {
-    Position cPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    Position cPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     userCurrentPosition = cPosition;
 
-    LatLng latLngPosition =
-        LatLng(userCurrentPosition!.latitude, userCurrentPosition!.longitude);
-    CameraPosition cameraPosition =
-        CameraPosition(target: latLngPosition, zoom: 14);
-    newGoogleMapController!
-        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    LatLng latLngPosition = LatLng(userCurrentPosition!.latitude, userCurrentPosition!.longitude);
+    CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 14);
+    newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    // String humanReadableAddress =
-    //     await AssistantMethods.searchAddressForGeographicCoordinates(
-    //         userCurrentPosition!);
-    // print("this is your address = " + humanReadableAddress);
+    //String humanReadableAddress = await AssistantMethods.searchAddressForGeographicCoordinates(userCurrentPosition!, context);
+    //print("this is your address = " + humanReadableAddress);
   }
 
   @override
@@ -244,155 +247,160 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
-      body: Stack(children: [
-        GoogleMap(
-          padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
-          mapType: MapType.normal,
-          myLocationEnabled: true,
-          zoomGesturesEnabled: true,
-          zoomControlsEnabled: true,
-          initialCameraPosition: _kGooglePlex,
-          onMapCreated: (GoogleMapController controller) {
-            _controllerGoogleMap.complete(controller);
-            newGoogleMapController = controller;
+      body: Stack(
+        children: <Widget>[
+          GoogleMap(
+            padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
+            mapType: MapType.normal,
+            myLocationEnabled: true,
+            zoomControlsEnabled: true,
+            zoomGesturesEnabled: true,
+            initialCameraPosition: _center,
 
-            // for black theme google map
-            blackThemeGoogleMap();
+            onMapCreated: (mapController){
+              _controllerGoogleMap.complete(mapController);
+              newGoogleMapController = mapController;
 
-            setState(() {
-              bottomPaddingOfMap = 230;
-            });
+              // for black theme Google Map
+              blackThemeGoogleMap();
 
-            locateUserPosition();
-          },
-        ),
-        //custom hamburger button
-        Positioned(
-          top: 40,
-          left: 22,
-          child: GestureDetector(
-            onTap: () {
-              sKey.currentState!.openDrawer();
+              setState(() {
+                bottomPaddingOfMap = 240;
+              });
+              locateUserPosition();
             },
-            child: const CircleAvatar(
-              backgroundColor: Colors.red,
-              child: Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
-            ),
           ),
-        ),
 
-        //ui for searching location
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: AnimatedSize(
-            curve: Curves.easeIn,
-            duration: const Duration(milliseconds: 120),
-            child: Container(
-              height: searchLocationContainerHeight,
-              decoration: const BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    topLeft: Radius.circular(20),
-                  )),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                child: Column(
-                  children: [
-                    //from
-                    Row(children: [
-                      const Icon(
-                        Icons.add_location_alt_outlined,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "From",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                          Text(
-                            "Your current location",
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ]),
-
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-
-                    //to
-                    Row(children: [
-                      const Icon(
-                        Icons.add_location_alt_outlined,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "To",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                          Text(
-                            "Where to?",
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ]),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-
-                    ElevatedButton(
-                      child: Text("Check shuttle/ Request ride"),
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                          textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                    )
-                  ],
+          // custom hamburger button
+          Positioned(
+            top: 40,
+            left: 22,
+            child: GestureDetector(
+              onTap: () {
+                sKey.currentState!.openDrawer();
+              },
+              child: const CircleAvatar(
+                backgroundColor: Colors.red,
+                child: Icon(
+                  Icons.menu,
+                  color: Colors.white,
                 ),
               ),
             ),
           ),
-        )
-      ]),
+
+          // search bar UI
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: AnimatedSize(
+              curve: Curves.easeIn,
+              duration: const Duration(milliseconds: 120),
+              child: Container(
+                height: searchLocationContainerHeight,
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  child: Column(
+                    children: [
+                      // from location
+                      Row(
+                        children: [
+                          const Icon(Icons.add_location_alt_outlined, color: Colors.grey),
+                          const SizedBox(width: 12.0),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "From",
+                                style: TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                              Text(
+                                Provider.of<AppInfo>(context).userPickUpLocation != null
+                                ? (Provider.of<AppInfo>(context).userPickUpLocation!.locationName!)
+                                : "Not getting address",
+                                style: const TextStyle(color: Colors.grey, fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 10),
+                      const Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // to location
+                      GestureDetector(
+                        onTap:() {
+                          // go to location search screen
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(Icons.add_location_alt_outlined, color: Colors.grey),
+                            const SizedBox(width: 12.0),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "To",
+                                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                                ),
+                                const Text(
+                                  "Where to?",
+                                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // shuttle button
+                      const SizedBox(
+                        height: 10
+                      ),
+                      const Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+
+                      ElevatedButton(
+                        child: Text("Check shuttle / Request ride"),
+                        onPressed: () {
+                          // on press
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

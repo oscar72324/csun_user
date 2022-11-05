@@ -6,17 +6,21 @@ class RequestAssistant {
   static Future<dynamic> receiveRequest(String url) async {
     http.Response httpResponse = await http.get(Uri.parse(url));
 
-    try {
+    try{
       if (httpResponse.statusCode == 200) {
+        //successful
         String responseData = httpResponse.body;
 
         var decodeResponseData = jsonDecode(responseData);
 
         return decodeResponseData;
-      } else {
-        return "Error Occurred, Failed.";
       }
-    } catch (exp) {
+      else{
+        //fail
+        return "Failed";
+      }
+    }
+    catch (e){
       return "Failed";
     }
   }
