@@ -16,7 +16,7 @@ void main() async {
         child: MaterialApp(
           title: 'Shuttle Nav',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.red,
           ),
           home: const MySplashScreen(),
           debugShowCheckedModeBanner: false,

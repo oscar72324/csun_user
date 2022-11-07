@@ -1,9 +1,5 @@
 import 'dart:async';
-
-import 'package:csun_user/assistants/assistant_methods.dart';
-import 'package:csun_user/authentication/login_screen..dart';
-import 'package:csun_user/global/global.dart';
-import 'package:csun_user/widgets/my_drawer.dart';
+import 'package:csun_user/mainScreens/search_places_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -11,7 +7,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
+import '../assistants/assistant_methods.dart';
+import '../global/global.dart';
 import '../infoHandler/app_info.dart';
+import '../widgets/my_drawer.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -205,7 +204,7 @@ class _MainScreenState extends State<MainScreen> {
   checkIfLocationPermissionAllowed() async {
     _locationPermission = await Geolocator.requestPermission();
 
-    if (_locationPermission == LocationPermission.denied) {
+    if(_locationPermission == LocationPermission.denied){
       _locationPermission = await Geolocator.requestPermission();
     }
 
@@ -220,10 +219,10 @@ class _MainScreenState extends State<MainScreen> {
 
     LatLng latLngPosition = LatLng(userCurrentPosition!.latitude, userCurrentPosition!.longitude);
     CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 14);
-    newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    // newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    //String humanReadableAddress = await AssistantMethods.searchAddressForGeographicCoordinates(userCurrentPosition!, context);
-    //print("this is your address = " + humanReadableAddress);
+    // String humanReadableAddress = await AssistantMethods.searchAddressForGeographicCoordinates(userCurrentPosition!, context);
+    // print("this is your address = " + humanReadableAddress);
   }
 
   @override
@@ -248,7 +247,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       body: Stack(
-        children: <Widget>[
+        children: [
           GoogleMap(
             padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
             mapType: MapType.normal,
@@ -257,9 +256,9 @@ class _MainScreenState extends State<MainScreen> {
             zoomGesturesEnabled: true,
             initialCameraPosition: _center,
 
-            onMapCreated: (mapController){
-              _controllerGoogleMap.complete(mapController);
-              newGoogleMapController = mapController;
+            onMapCreated: (GoogleMapController controller){
+              _controllerGoogleMap.complete(controller);
+              newGoogleMapController = controller;
 
               // for black theme Google Map
               blackThemeGoogleMap();
@@ -300,7 +299,7 @@ class _MainScreenState extends State<MainScreen> {
               child: Container(
                 height: searchLocationContainerHeight,
                 decoration: const BoxDecoration(
-                  color: Colors.black54,
+                  color: Colors.black87,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -310,11 +309,11 @@ class _MainScreenState extends State<MainScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
                   child: Column(
                     children: [
-                      // from location
+                      //from
                       Row(
                         children: [
-                          const Icon(Icons.add_location_alt_outlined, color: Colors.grey),
-                          const SizedBox(width: 12.0),
+                          const Icon(Icons.add_location_alt_outlined, color: Colors.grey,),
+                          const SizedBox(width: 12.0,),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -324,8 +323,8 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                               Text(
                                 Provider.of<AppInfo>(context).userPickUpLocation != null
-                                ? (Provider.of<AppInfo>(context).userPickUpLocation!.locationName!)
-                                : "Not getting address",
+                                    ? (Provider.of<AppInfo>(context).userPickUpLocation!.locationName!).substring(0,24) + "..."
+                                    : "Not getting address",
                                 style: const TextStyle(color: Colors.grey, fontSize: 14),
                               ),
                             ],
@@ -343,28 +342,29 @@ class _MainScreenState extends State<MainScreen> {
 
                       // to location
                       GestureDetector(
-                        onTap:() {
-                          // go to location search screen
+                        onTap: (){
+                          // go to search places screen
+                          Navigator.push(context, MaterialPageRoute(builder: (c) => SearchPlacesScreen()));
                         },
                         child: Row(
-                          children: [
-                            const Icon(Icons.add_location_alt_outlined, color: Colors.grey),
-                            const SizedBox(width: 12.0),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "To",
-                                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                                ),
-                                const Text(
-                                  "Where to?",
-                                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                            children: [
+                              const Icon(Icons.add_location_alt_outlined, color: Colors.grey),
+                              const SizedBox(width: 12.0),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "To",
+                                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                                  ),
+                                  const Text(
+                                    "Where to?",
+                                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                       ),
 
                       // shuttle button
@@ -381,7 +381,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
 
                       ElevatedButton(
-                        child: Text("Check shuttle / Request ride"),
+                        child: const Text("Check shuttle / Request ride"),
                         onPressed: () {
                           // on press
                         },

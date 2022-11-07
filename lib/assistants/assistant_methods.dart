@@ -23,7 +23,7 @@ class AssistantMethods {
       Directions userPickUpAddress = Directions();
       userPickUpAddress.locationLatitude = position.latitude;
       userPickUpAddress.locationLongitude = position.longitude;
-      userPickUpAddress.locationId = humanReadableAddress;
+      userPickUpAddress.locationName = humanReadableAddress;
 
       Provider.of<AppInfo>(context, listen: false).updatePickUpLocationAddress(userPickUpAddress);
     }
