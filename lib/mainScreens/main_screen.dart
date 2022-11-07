@@ -7,6 +7,10 @@ import 'package:csun_user/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../infoHandler/app_info.dart';
+import 'search_places_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -17,8 +21,8 @@ class _MainScreenState extends State<MainScreen> {
   final Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController? newGoogleMapController;
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+  static const CameraPosition _center = CameraPosition(
+    target: LatLng(34.24138, -118.52946),
     zoom: 14.4746,
   );
 
@@ -251,7 +255,7 @@ class _MainScreenState extends State<MainScreen> {
           myLocationEnabled: true,
           zoomGesturesEnabled: true,
           zoomControlsEnabled: true,
-          initialCameraPosition: _kGooglePlex,
+          initialCameraPosition: _center,
           onMapCreated: (GoogleMapController controller) {
             _controllerGoogleMap.complete(controller);
             newGoogleMapController = controller;
@@ -315,19 +319,20 @@ class _MainScreenState extends State<MainScreen> {
                         width: 12,
                       ),
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "From",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "From",
+                                style: TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                              Text(
+                                Provider.of<AppInfo>(context).userPickUpLocation != null
+                                    ? (Provider.of<AppInfo>(context).userPickUpLocation!.locationName!).substring(0,24) + "..."
+                                    : "Not getting address",
+                                style: const TextStyle(color: Colors.grey, fontSize: 14),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "Your current location",
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ),
-                        ],
-                      ),
                     ]),
 
                     const SizedBox(
@@ -343,29 +348,31 @@ class _MainScreenState extends State<MainScreen> {
                     ),
 
                     //to
-                    Row(children: [
-                      const Icon(
-                        Icons.add_location_alt_outlined,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "To",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                    GestureDetector(
+                        onTap: (){
+                          // go to search places screen
+                          Navigator.push(context, MaterialPageRoute(builder: (c) => SearchPlacesScreen()));
+                        },
+                        child: Row(
+                            children: [
+                              const Icon(Icons.add_location_alt_outlined, color: Colors.grey),
+                              const SizedBox(width: 12.0),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "To",
+                                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                                  ),
+                                  const Text(
+                                    "Where to?",
+                                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          Text(
-                            "Where to?",
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ),
-                        ],
                       ),
-                    ]),
                     const SizedBox(
                       height: 10,
                     ),

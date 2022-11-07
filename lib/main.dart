@@ -1,6 +1,9 @@
 import 'package:csun_user/splashScreen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'infoHandler/app_info.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -8,13 +11,16 @@ void main() async {
 
   runApp(
     MyApp(
-      child: MaterialApp(
-        title: 'Shuttle Nav',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+      child: ChangeNotifierProvider(
+        create: (context) => AppInfo(),
+        child: MaterialApp(
+          title: 'Shuttle Nav',
+          theme: ThemeData(
+            primarySwatch: Colors.red,
+          ),
+          home: const MySplashScreen(),
+          debugShowCheckedModeBanner: false,
         ),
-        home: const MySplashScreen(),
-        debugShowCheckedModeBanner: false,
       ),
     ),
   );
