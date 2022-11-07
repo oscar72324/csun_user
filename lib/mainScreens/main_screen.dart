@@ -277,7 +277,7 @@ class _MainScreenState extends State<MainScreen> {
             child: const CircleAvatar(
               backgroundColor: Colors.red,
               child: Icon(
-                Icons.menu,
+                Icons.person,
                 color: Colors.white,
               ),
             ),
