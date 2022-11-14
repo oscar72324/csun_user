@@ -389,7 +389,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: Text("Check shuttle/ Request ride"),
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                          backgroundColor: Colors.red,
                           textStyle: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                     )
