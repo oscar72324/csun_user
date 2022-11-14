@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class Directions{
   String? humanReadableAddress;
   String? locationName;

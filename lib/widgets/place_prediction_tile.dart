@@ -3,7 +3,9 @@ import 'package:csun_user/global/map_key.dart';
 import 'package:csun_user/models/predicted_places.dart';
 import 'package:csun_user/widgets/progress_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../infoHandler/app_info.dart';
 import '../models/directions.dart';
 
 class PlacePredictionTileDesign extends StatelessWidget{
@@ -15,13 +17,16 @@ class PlacePredictionTileDesign extends StatelessWidget{
     showDialog(
       context: context,
       builder: (BuildContext context) => ProgressDialog(
-        message: "Setting up drop-off, please wait..."
+        message: "Setting up drop-off"
       ),
     );
 
     String placeDirectionDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
 
     var responseApi = await RequestAssistant.receiveRequest(placeDirectionDetailsUrl);
+
+    Navigator.pop(context);
+
     if(responseApi == "Failed"){
       return;
     }
@@ -34,9 +39,16 @@ class PlacePredictionTileDesign extends StatelessWidget{
       directions.locationLatitude = responseApi["result"]["geometry"]["location"]["lat"];
       directions.locationLongitude = responseApi["result"]["geometry"]["location"]["lng"];
 
+      Provider.of<AppInfo>(context, listen: false).updateDropOffLocationAddress(directions);
+
+      Navigator.pop(context, "obtainedDropOff");
+
+      /*
       print("\nlocation name: " + directions.locationName!);
       print("\nlocation lat: " + directions.locationLatitude!.toString());
       print("\nlocation lng: " + directions.locationLongitude.toString());
+      */
+
     }
   }
 

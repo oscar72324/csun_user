@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SafetyEscort extends StatelessWidget{
-  String? _phoneNumber;
+  String? _phoneNumber = "8186775042";
 
   // const SafetyEscort({super,key})
   @override
