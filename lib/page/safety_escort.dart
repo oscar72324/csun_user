@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SafetyEscort extends StatelessWidget{
-  String? _phoneNumber;
+  String _phoneNumber = "8186775042";
 
   // const SafetyEscort({super,key})
   @override
@@ -19,7 +19,7 @@ class SafetyEscort extends StatelessWidget{
       centerTitle: true,
       // backgroundColor: Colors.red,
       flexibleSpace: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('img/MatadorRed.psd'),
             fit: BoxFit.fill,
