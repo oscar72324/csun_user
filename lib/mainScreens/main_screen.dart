@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:csun_user/mainScreens/search_places_screen.dart';
+import 'package:csun_user/page/safety_escort.dart';
 import 'package:csun_user/widgets/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,6 +50,9 @@ class _MainScreenState extends State<MainScreen> {
   String userEmail = "Your Email";
 
   bool openNavigationDrawer = true;
+
+  bool checkSafetyEscortBannerTime = false;
+  bool checkShuttleBannerTime = false;
 
   blackThemeGoogleMap() {
     newGoogleMapController!.setMapStyle('''
@@ -264,17 +268,46 @@ class _MainScreenState extends State<MainScreen> {
     userEmail = userModelCurrentInfo!.email!;
   }
 
-  /*@override
+  checkTimeForSafetyReminders(){
+    var dt = DateTime.now();
+
+    if(dt.hour > 5){
+      checkShuttleBannerTime = true;
+      if(dt.hour > 10){
+        checkSafetyEscortBannerTime = true;
+      }
+      if(dt.hour > 21){
+        checkShuttleBannerTime = false;
+      }
+    }
+    else{
+      checkShuttleBannerTime = false;
+      checkSafetyEscortBannerTime = false;
+    }
+
+  }
+
+  @override
   void initState() {
     super.initState();
 
-    checkIfLocationPermissionAllowed();
-  }*/
+    locateUserPosition();
+
+    checkTimeForSafetyReminders();
+    if(checkShuttleBannerTime){
+      WidgetsBinding.instance.addPostFrameCallback((_) => showShuttleBanner());
+    }
+
+    if(checkSafetyEscortBannerTime){
+      WidgetsBinding.instance.addPostFrameCallback((_) => showSafetyEscortBanner());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: sKey,
+
       drawer: Container(
         width: 310,
         child: Theme(
@@ -285,6 +318,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
+
       body: Stack(
         children: [
           GoogleMap(
@@ -308,7 +342,7 @@ class _MainScreenState extends State<MainScreen> {
               setState(() {
                 bottomPaddingOfMap = 240;
               });
-              locateUserPosition();
+                // locateUserPosition();
             },
           ),
 
@@ -335,6 +369,41 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
           ),
+
+            // safety notification banners
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(vertical: 80),
+            //   child: Column(
+            //     children: [
+            //       // matador patrol safety escort banner
+            //       MaterialBanner(
+            //         content: const Text("Don't walk alone!\nContact Matador Patrol for a safety escort"),
+            //         contentTextStyle: const TextStyle(
+            //           color: Colors.white,
+            //         ),
+            //         backgroundColor: Colors.black54,
+            //         forceActionsBelow: true,
+            //         leading: const CircleAvatar(
+            //           child: Icon(Icons.access_time_sharp),
+            //         ),
+            //         actions: [
+            //           ElevatedButton(
+            //             child: const Text("Dismiss"),
+            //             onPressed: (){
+            //               ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+            //             },
+            //           ),
+            //           ElevatedButton(
+            //             child: const Text("Call"),
+            //             onPressed: (){
+                          
+            //             },
+            //           )
+            //         ],
+            //       ),
+            //     ],
+            //   ),
+            // ),
 
           // search bar UI
           Positioned(
@@ -574,5 +643,65 @@ class _MainScreenState extends State<MainScreen> {
       circleSet.add(originCircle);
       circleSet.add(destinationCircle);
     });
+  }
+
+  void showSafetyEscortBanner(){
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        content: const Text("Don't walk alone!\nContact Matador Patrol for a safety escort"),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
+        forceActionsBelow: true,
+        leading: const CircleAvatar(
+          child: Icon(Icons.access_time_sharp),
+        ),
+        actions: [
+          ElevatedButton(
+            child: const Text("Dismiss"),
+              onPressed: (){
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+              },
+          ),
+          ElevatedButton(
+            child: const Text("Call"),
+              onPressed: (){
+
+              },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showShuttleBanner(){
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        content: const Text("The shuttle runs until 9pm"),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
+        forceActionsBelow: true,
+        leading: const CircleAvatar(
+          child: Icon(Icons.access_time_sharp),
+        ),
+        actions: [
+          ElevatedButton(
+            child: const Text("Dismiss"),
+              onPressed: (){
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+              },
+          ),
+          ElevatedButton(
+            child: const Text("See Route"),
+              onPressed: (){
+
+              },
+          ),
+        ],
+      ),
+    );
   }
 }
