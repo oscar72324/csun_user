@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:csun_user/mainScreens/search_places_screen.dart';
+import 'package:csun_user/page/safety_escort.dart';
 import 'package:csun_user/widgets/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +51,9 @@ class _MainScreenState extends State<MainScreen> {
   String userEmail = "Your Email";
 
   bool openNavigationDrawer = true;
+
+  bool checkSafetyEscortBannerTime = false;
+  bool checkShuttleBannerTime = false;
 
   blackThemeGoogleMap() {
     newGoogleMapController!.setMapStyle('''
@@ -264,17 +269,46 @@ class _MainScreenState extends State<MainScreen> {
     userEmail = userModelCurrentInfo!.email!;
   }
 
-  /*@override
+  checkTimeForSafetyReminders(){
+    var dt = DateTime.now();
+
+    if(dt.hour > 5){
+      checkShuttleBannerTime = true;
+      if(dt.hour > 10){
+        checkSafetyEscortBannerTime = true;
+      }
+      if(dt.hour > 21){
+        checkShuttleBannerTime = false;
+      }
+    }
+    else{
+      checkShuttleBannerTime = false;
+      checkSafetyEscortBannerTime = false;
+    }
+
+  }
+
+  @override
   void initState() {
     super.initState();
 
-    checkIfLocationPermissionAllowed();
-  }*/
+    locateUserPosition();
+
+    checkTimeForSafetyReminders();
+    if(checkShuttleBannerTime){
+      WidgetsBinding.instance.addPostFrameCallback((_) => showShuttleBanner());
+    }
+
+    if(checkSafetyEscortBannerTime){
+      WidgetsBinding.instance.addPostFrameCallback((_) => showSafetyEscortBanner());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: sKey,
+
       drawer: Container(
         width: 310,
         child: Theme(
@@ -285,181 +319,217 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
+
       body: Stack(
-        children: [
-          GoogleMap(
-            padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
-            mapType: MapType.normal,
-            myLocationEnabled: true,
-            zoomControlsEnabled: true,
-            zoomGesturesEnabled: true,
-            initialCameraPosition: _center,
-            polylines: polyLineSet,
-            markers: markersSet,
-            circles: circleSet,
+          children: [
+            GoogleMap(
+              padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
+              mapType: MapType.normal,
+              myLocationEnabled: true,
+              zoomControlsEnabled: true,
+              zoomGesturesEnabled: true,
+              initialCameraPosition: _center,
+              polylines: polyLineSet,
+              markers: markersSet,
+              circles: circleSet,
 
-            onMapCreated: (GoogleMapController controller){
-              _controllerGoogleMap.complete(controller);
-              newGoogleMapController = controller;
+              onMapCreated: (GoogleMapController controller){
+                _controllerGoogleMap.complete(controller);
+                newGoogleMapController = controller;
 
-              // for black theme Google Map
-              blackThemeGoogleMap();
+                // for black theme Google Map
+                blackThemeGoogleMap();
 
-              setState(() {
-                bottomPaddingOfMap = 240;
-              });
-              locateUserPosition();
-            },
-          ),
-
-          // custom hamburger button
-          Positioned(
-            top: 40,
-            left: 22,
-            child: GestureDetector(
-              onTap: () {
-                if(openNavigationDrawer){
-                  sKey.currentState!.openDrawer();
-                }
-                else{
-                  // restart-refresh-minimize app
-                  SystemNavigator.pop();
-                }
+                setState(() {
+                  bottomPaddingOfMap = 240;
+                });
+                // locateUserPosition();
               },
-              child: CircleAvatar(
-                backgroundColor: Colors.red,
-                child: Icon(
-                  openNavigationDrawer ? Icons.menu : Icons.close,
-                  color: Colors.white,
+            ),
+
+            // custom hamburger button
+            Positioned(
+              top: 40,
+              left: 22,
+              child: GestureDetector(
+                onTap: () {
+                  if(openNavigationDrawer){
+                    sKey.currentState!.openDrawer();
+                  }
+                  else{
+                    // restart-refresh-minimize app
+                    SystemNavigator.pop();
+                  }
+                },
+                child: CircleAvatar(
+                  backgroundColor: Colors.red,
+                  child: Icon(
+                    openNavigationDrawer ? Icons.menu : Icons.close,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          ),
 
-          // search bar UI
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: AnimatedSize(
-              curve: Curves.easeIn,
-              duration: const Duration(milliseconds: 120),
-              child: Container(
-                height: searchLocationContainerHeight,
-                decoration: const BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+            // safety notification banners
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(vertical: 80),
+            //   child: Column(
+            //     children: [
+            //       // matador patrol safety escort banner
+            //       MaterialBanner(
+            //         content: const Text("Don't walk alone!\nContact Matador Patrol for a safety escort"),
+            //         contentTextStyle: const TextStyle(
+            //           color: Colors.white,
+            //         ),
+            //         backgroundColor: Colors.black54,
+            //         forceActionsBelow: true,
+            //         leading: const CircleAvatar(
+            //           child: Icon(Icons.access_time_sharp),
+            //         ),
+            //         actions: [
+            //           ElevatedButton(
+            //             child: const Text("Dismiss"),
+            //             onPressed: (){
+            //               ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+            //             },
+            //           ),
+            //           ElevatedButton(
+            //             child: const Text("Call"),
+            //             onPressed: (){
+                          
+            //             },
+            //           )
+            //         ],
+            //       ),
+            //     ],
+            //   ),
+            // ),
+
+            // search bar UI
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: AnimatedSize(
+                curve: Curves.easeIn,
+                duration: const Duration(milliseconds: 120),
+                child: Container(
+                  height: searchLocationContainerHeight,
+                  decoration: const BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-                  child: Column(
-                    children: [
-                      //from
-                      Row(
-                        children: [
-                          const Icon(Icons.add_location_alt_outlined, color: Colors.grey,),
-                          const SizedBox(width: 12.0,),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "From",
-                                style: TextStyle(color: Colors.grey, fontSize: 12),
-                              ),
-                              Text(
-                                Provider.of<AppInfo>(context).userPickUpLocation != null
-                                    ? (Provider.of<AppInfo>(context).userPickUpLocation!.locationName!).substring(0,24) + "..."
-                                    : "Not getting address",
-                                style: const TextStyle(color: Colors.grey, fontSize: 14),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                    child: Column(
+                      children: [
+                        //from
+                        Row(
+                          children: [
+                            const Icon(Icons.add_location_alt_outlined, color: Colors.grey,),
+                            const SizedBox(width: 12.0,),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "From",
+                                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                                ),
+                                Text(
+                                  Provider.of<AppInfo>(context).userPickUpLocation != null
+                                      ? (Provider.of<AppInfo>(context).userPickUpLocation!.locationName!).substring(0,24) + "..."
+                                      : "Not getting address",
+                                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
 
-                      const SizedBox(height: 10),
-                      const Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(height: 16),
+                        const SizedBox(height: 10),
+                        const Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(height: 16),
 
-                      // to location
-                      GestureDetector(
-                        onTap: () async{
-                          // go to search places screen
-                          var responseFromSearchScreen = await Navigator.push(context, MaterialPageRoute(builder: (c) => SearchPlacesScreen()));
+                        // to location
+                        GestureDetector(
+                          onTap: () async{
+                            // go to search places screen
+                            var responseFromSearchScreen = await Navigator.push(context, MaterialPageRoute(builder: (c) => SearchPlacesScreen()));
 
-                          if(responseFromSearchScreen == "obtainedDropOff"){
-                            setState(() {
-                              openNavigationDrawer = false;
-                            });
+                            if(responseFromSearchScreen == "obtainedDropOff"){
+                              setState(() {
+                                openNavigationDrawer = false;
+                              });
 
-                            // draw routes - draw polylines
-                            await drawPolylineFromOriginToDestination();
-                          }
-                        },
-                        child: Row(
-                            children: [
-                              const Icon(Icons.add_location_alt_outlined, color: Colors.grey),
-                              const SizedBox(width: 12.0),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "To",
-                                    style: TextStyle(color: Colors.grey, fontSize: 12),
-                                  ),
-                                  Text(
-                                    Provider.of<AppInfo>(context).userDropOffLocation != null
-                                    ? (Provider.of<AppInfo>(context).userDropOffLocation!.locationName!)
-                                    : "Where to?",
-                                    style: TextStyle(color: Colors.grey, fontSize: 14),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                      ),
+                              // draw routes - draw polylines
+                              await drawPolylineFromOriginToDestination();
+                            }
+                          },
+                          child: Row(
+                              children: [
+                                const Icon(Icons.add_location_alt_outlined, color: Colors.grey),
+                                const SizedBox(width: 12.0),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "To",
+                                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                                    ),
+                                    Text(
+                                      Provider.of<AppInfo>(context).userDropOffLocation != null
+                                      ? (Provider.of<AppInfo>(context).userDropOffLocation!.locationName!)
+                                      : "Where to?",
+                                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                        ),
 
-                      // shuttle button
-                      const SizedBox(
-                        height: 10
-                      ),
-                      const Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
+                        // shuttle button
+                        const SizedBox(
+                          height: 10
+                        ),
+                        const Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
 
-                      ElevatedButton(
-                        child: const Text("Check shuttle / Request ride"),
-                        onPressed: () {
-                          // on press
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          textStyle: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        ElevatedButton(
+                          child: const Text("Check shuttle / Request ride"),
+                          onPressed: () {
+                            // on press
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
     );
   }
 
@@ -574,5 +644,65 @@ class _MainScreenState extends State<MainScreen> {
       circleSet.add(originCircle);
       circleSet.add(destinationCircle);
     });
+  }
+
+  void showSafetyEscortBanner(){
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        content: const Text("Don't walk alone!\nContact Matador Patrol for a safety escort"),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
+        forceActionsBelow: true,
+        leading: const CircleAvatar(
+          child: Icon(Icons.access_time_sharp),
+        ),
+        actions: [
+          ElevatedButton(
+            child: const Text("Dismiss"),
+              onPressed: (){
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+              },
+          ),
+          ElevatedButton(
+            child: const Text("Call"),
+              onPressed: (){
+
+              },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showShuttleBanner(){
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        content: const Text("The shuttle runs until 9pm"),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
+        forceActionsBelow: true,
+        leading: const CircleAvatar(
+          child: Icon(Icons.access_time_sharp),
+        ),
+        actions: [
+          ElevatedButton(
+            child: const Text("Dismiss"),
+              onPressed: (){
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+              },
+          ),
+          ElevatedButton(
+            child: const Text("See Route"),
+              onPressed: (){
+
+              },
+          ),
+        ],
+      ),
+    );
   }
 }
