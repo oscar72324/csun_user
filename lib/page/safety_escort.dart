@@ -2,32 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class SafetyEscort extends StatelessWidget{
-  String _phoneNumber = "8186775042";
+class SafetyEscort extends StatelessWidget {
+  String _phoneNumber = "8185227359";
 
   // const SafetyEscort({super,key})
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      shape: Border(bottom: BorderSide(
-        color: Colors.black,
-        width: 0.5,
-      )),
-      iconTheme: IconThemeData(color: Colors.white),
-      toolbarHeight: 100,
-      // title: Text("Call us for a Safety Escort"),
-      centerTitle: true,
-      // backgroundColor: Colors.red,
-      flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('img/MatadorRed.psd'),
-            fit: BoxFit.fill,
+        appBar: AppBar(
+          shape: Border(
+              bottom: BorderSide(
+            color: Colors.black,
+            width: 0.5,
+          )),
+          iconTheme: IconThemeData(color: Colors.white),
+          toolbarHeight: 100,
+          // title: Text("Call us for a Safety Escort"),
+          centerTitle: true,
+          // backgroundColor: Colors.red,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/MatadorRed.psd'),
+                fit: BoxFit.fill,
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-    body: Column(
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -41,9 +42,7 @@ class SafetyEscort extends StatelessWidget{
                 ),
                 child: Text(
                   "Free personal safety escorts for students, faculty, staff, and visitors from Monday to Thursday, dusk to 11:00 p.m.",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -53,11 +52,9 @@ class SafetyEscort extends StatelessWidget{
                 padding: const EdgeInsets.all(40),
                 child: Text(
                   "NOTE: A police officer is availabe after 11:00 p.m. all other times when Matador Patrol is not on duty.",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700
-                    ),
+                  style: TextStyle(fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
-                  ),
+                ),
               ),
             ),
             Divider(
@@ -116,7 +113,8 @@ class SafetyEscort extends StatelessWidget{
                 ),
                 child: Text('3) Your contact number'),
               ),
-            ),Container(
+            ),
+            Container(
               child: Padding(
                 padding: const EdgeInsets.only(
                   top: 10,
@@ -128,7 +126,7 @@ class SafetyEscort extends StatelessWidget{
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 60),
+              padding: const EdgeInsets.only(top: 60, left: 143),
               child: SizedBox(
                 height: 50,
                 width: 100,
@@ -142,10 +140,10 @@ class SafetyEscort extends StatelessWidget{
                     ),
                     side: BorderSide(width: 1),
                   ),
-                  onPressed: () async{
+                  onPressed: () async {
                     final _call = 'tel:$_phoneNumber';
                     final _text = 'sms:$_phoneNumber';
-                    if(await canLaunchUrlString(_call)){
+                    if (await canLaunchUrlString(_call)) {
                       await launch(_call);
                     }
                   },
@@ -155,5 +153,5 @@ class SafetyEscort extends StatelessWidget{
             ),
           ],
         ),
-  );
+      );
 }
