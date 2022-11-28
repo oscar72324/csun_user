@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'package:csun_user/assistants/geofire_assistant.dart';
 import 'package:csun_user/mainScreens/search_places_screen.dart';
 import 'package:csun_user/page/safety_escort.dart';
+import 'package:csun_user/models/active_nearby_available_drivers.dart';
 import 'package:csun_user/widgets/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -12,6 +15,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../widgets/navigation_drawer_widget.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../assistants/assistant_methods.dart';
 import '../global/global.dart';
@@ -274,23 +278,21 @@ class _MainScreenState extends State<MainScreen> {
     userEmail = userModelCurrentInfo!.email!;
   }
 
-  checkTimeForSafetyReminders(){
+  checkTimeForSafetyReminders() {
     var dt = DateTime.now();
 
-    if(dt.hour > 5){
+    if (dt.hour > 5) {
       checkShuttleBannerTime = true;
-      if(dt.hour > 10){
+      if (dt.hour > 10) {
         checkSafetyEscortBannerTime = true;
       }
-      if(dt.hour > 21){
+      if (dt.hour > 21) {
         checkShuttleBannerTime = false;
       }
-    }
-    else{
+    } else {
       checkShuttleBannerTime = false;
       checkSafetyEscortBannerTime = false;
     }
-
   }
 
   @override
@@ -300,12 +302,13 @@ class _MainScreenState extends State<MainScreen> {
     locateUserPosition();
 
     checkTimeForSafetyReminders();
-    if(checkShuttleBannerTime){
+    if (checkShuttleBannerTime) {
       WidgetsBinding.instance.addPostFrameCallback((_) => showShuttleBanner());
     }
 
-    if(checkSafetyEscortBannerTime){
-      WidgetsBinding.instance.addPostFrameCallback((_) => showSafetyEscortBanner());
+    if (checkSafetyEscortBannerTime) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => showSafetyEscortBanner());
     }
   }
 
@@ -314,7 +317,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       key: sKey,
-
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.person),
@@ -354,15 +356,18 @@ class _MainScreenState extends State<MainScreen> {
               _controllerGoogleMap.complete(controller);
               newGoogleMapController = controller;
 
-                // for black theme Google Map
-                blackThemeGoogleMap();
+              // for black theme Google Map
+              blackThemeGoogleMap();
 
-                setState(() {
-                  bottomPaddingOfMap = 240;
-                });
-                // locateUserPosition();
-              },
-            ),
+              setState(() {
+                bottomPaddingOfMap = 240;
+              });
+              // locateUserPosition();
+            },
+          ),
+          // SlidingUpPanel(
+
+          // ),
 
           // custom hamburger button
           // Positioned(
@@ -428,7 +433,9 @@ class _MainScreenState extends State<MainScreen> {
                                     TextStyle(color: Colors.grey, fontSize: 12),
                               ),
                               Text(
-                                Provider.of<AppInfo>(context).userPickUpLocation !=null
+                                Provider.of<AppInfo>(context)
+                                            .userPickUpLocation !=
+                                        null
                                     ? "${(Provider.of<AppInfo>(context).userPickUpLocation!.locationName!).substring(0, 24)}..."
                                     : "Not getting address",
                                 style: const TextStyle(
@@ -439,13 +446,13 @@ class _MainScreenState extends State<MainScreen> {
                         ],
                       ),
 
-                        const SizedBox(height: 10),
-                        const Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(height: 16),
+                      const SizedBox(height: 10),
+                      const Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(height: 16),
 
                       // to location
                       GestureDetector(
@@ -506,27 +513,27 @@ class _MainScreenState extends State<MainScreen> {
                         height: 16,
                       ),
 
-                        ElevatedButton(
-                          child: const Text("Check shuttle / Request ride"),
-                          onPressed: () {
-                            // on press
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            textStyle: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      ElevatedButton(
+                        child: const Text("Check shuttle / Request ride"),
+                        onPressed: () {
+                          // on press
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -653,10 +660,11 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void showSafetyEscortBanner(){
+  void showSafetyEscortBanner() {
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
-        content: const Text("Don't walk alone!\nContact Matador Patrol for a safety escort"),
+        content: const Text(
+            "Don't walk alone!\nContact Matador Patrol for a safety escort"),
         contentTextStyle: const TextStyle(
           color: Colors.white,
         ),
@@ -668,22 +676,20 @@ class _MainScreenState extends State<MainScreen> {
         actions: [
           ElevatedButton(
             child: const Text("Dismiss"),
-              onPressed: (){
-                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-              },
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+            },
           ),
           ElevatedButton(
             child: const Text("Call"),
-              onPressed: (){
-
-              },
+            onPressed: () {},
           ),
         ],
       ),
     );
   }
 
-  void showShuttleBanner(){
+  void showShuttleBanner() {
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
         content: const Text("The shuttle runs until 9pm"),
@@ -698,18 +704,63 @@ class _MainScreenState extends State<MainScreen> {
         actions: [
           ElevatedButton(
             child: const Text("Dismiss"),
-              onPressed: (){
-                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-              },
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+            },
           ),
           ElevatedButton(
             child: const Text("See Route"),
-              onPressed: (){
-
-              },
+            onPressed: () {},
           ),
         ],
       ),
     );
+  }
+
+  initializeGeofireListener() {
+    Geofire.initialize("activeDrivers");
+
+    Geofire.queryAtLocation(
+            userCurrentPosition!.latitude, userCurrentPosition!.longitude, 10)!
+        .listen((map) {
+      print(map);
+      if (map != null) {
+        var callBack = map['callBack'];
+
+        //latitude will be retrieved from map['latitude']
+        //longitude will be retrieved from map['longitude']
+
+        switch (callBack) {
+          case Geofire.onKeyEntered:
+            ActiveNearbyAvailableDrivers activeNearbyAvailableDriver =
+                ActiveNearbyAvailableDrivers();
+            activeNearbyAvailableDriver.locationLatitude = map['latitude'];
+            activeNearbyAvailableDriver.locationLongitude = map['longitude'];
+            activeNearbyAvailableDriver.driverId = map['key'];
+            GeoFireAssistant.activeNearbyAvailableDriversList
+                .add(activeNearbyAvailableDriver);
+            break;
+
+          case Geofire.onKeyExited:
+            GeoFireAssistant.deleteOfflineDriverFromList(map['key']);
+            break;
+
+          case Geofire.onKeyMoved:
+            ActiveNearbyAvailableDrivers activeNearbyAvailableDriver =
+                ActiveNearbyAvailableDrivers();
+            activeNearbyAvailableDriver.locationLatitude = map['latitude'];
+            activeNearbyAvailableDriver.locationLongitude = map['longitude'];
+            activeNearbyAvailableDriver.driverId = map['key'];
+            GeoFireAssistant.updateActiveNearbyAvailableDriverLocation(
+                activeNearbyAvailableDriver);
+            break;
+
+          case Geofire.onGeoQueryReady:
+            break;
+        }
+      }
+
+      setState(() {});
+    });
   }
 }
