@@ -54,6 +54,7 @@ class _MainScreenState extends State<MainScreen> {
   String userEmail = "Your Email";
 
   bool openNavigationDrawer = true;
+  bool activeNearbyDriverKeysLoaded = false;
 
   bool checkSafetyEscortBannerTime = false;
   bool checkWeekdayShuttleBannerTime = false;
@@ -275,6 +276,8 @@ class _MainScreenState extends State<MainScreen> {
 
     userName = userModelCurrentInfo!.name!;
     userEmail = userModelCurrentInfo!.email!;
+
+    initializeGeofireListener();
   }
 
   initializeGeofireListener(){
@@ -297,11 +300,16 @@ class _MainScreenState extends State<MainScreen> {
               activeNearbyAvailableDriver.driverId = map['key'];
 
               GeoFireAssistant.activeNearbyAvailableDriversList.add(activeNearbyAvailableDriver);
+
+              if(activeNearbyDriverKeysLoaded == true){
+                displayActiveDriversOnUsersMap();
+              }
               break;
 
             // when a driver goes offline (inactive)
             case Geofire.onKeyExited:
               GeoFireAssistant.deleteOfflineDriverFromList(map['key']);
+              displayActiveDriversOnUsersMap();
               break;
 
             // when a driver moves, update driver location
@@ -312,16 +320,45 @@ class _MainScreenState extends State<MainScreen> {
               activeNearbyAvailableDriver.driverId = map['key'];
 
               GeoFireAssistant.updateAvailableDriverLocation(activeNearbyAvailableDriver);
+
+              displayActiveDriversOnUsersMap();
               break;
 
+            // display online active drivers on the user map
             case Geofire.onGeoQueryReady:
+              displayActiveDriversOnUsersMap();
               break;
           }
         }
-
         setState(() {});
       }
     );
+  }
+
+  displayActiveDriversOnUsersMap(){
+    setState((){
+      markersSet.clear();
+      circleSet.clear();
+
+      Set<Marker> driversMarkerSet = Set<Marker>();
+
+      for(ActiveNearbyAvailableDrivers eachDriver in GeoFireAssistant.activeNearbyAvailableDriversList){
+        LatLng eachDriverActivePosition = LatLng(eachDriver.locationLatitude!, eachDriver.locationLongitude!);
+
+        Marker marker = Marker(
+          markerId: MarkerId(eachDriver.driverId!),
+          position: eachDriverActivePosition,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+          rotation: 360,
+          );
+
+          driversMarkerSet.add(marker);
+      }
+
+      setState(() {
+        markersSet = driversMarkerSet;
+      });
+    });
   }
 
   checkTimeForSafetyReminders(){
