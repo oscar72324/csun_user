@@ -41,8 +41,6 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
-  - geocoding (1.0.5):
-    - Flutter
   - GeoFire (4.3.0):
     - GeoFire/Database (= 4.3.0)
   - GeoFire/Database (4.3.0):
@@ -91,7 +89,6 @@ DEPENDENCIES:
   - flutter_geofire (from `.symlinks/plugins/flutter_geofire/ios`)
   - flutter_phone_direct_caller (from `.symlinks/plugins/flutter_phone_direct_caller/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - geocoding (from `.symlinks/plugins/geocoding/ios`)
   - GeoFire (from `https://github.com/mrdishant/geofire-objc`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
@@ -127,8 +124,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_phone_direct_caller/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
-  geocoding:
-    :path: ".symlinks/plugins/geocoding/ios"
   GeoFire:
     :git: https://github.com/mrdishant/geofire-objc
   geolocator_apple:
@@ -158,7 +153,6 @@ SPEC CHECKSUMS:
   flutter_geofire: 18797208c9042b71a59cb031c42d5670b97aefd1
   flutter_phone_direct_caller: bd2ffd297f371a8a6c7bfbba0196964ffe3c4358
   fluttertoast: 74526702fea2c060ea55dde75895b7e1bde1c86b
-  geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
   GeoFire: f113536c90f581f89107c31ec1efde1a1cae3115
   geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
   google_maps_flutter_ios: 66201f392bf62d500f07670a30488a247b9bb5b9
