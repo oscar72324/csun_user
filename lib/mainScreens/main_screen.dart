@@ -361,7 +361,22 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  int checkDayForShuttle(){
+    var dt = DateTime.now();
+
+    if((dt.weekday == DateTime.monday) || (dt.weekday == DateTime.tuesday) || (dt.weekday == DateTime.wednesday) || (dt.weekday == DateTime.thursday)){
+      return 0;
+    }
+    else if(dt.weekday == DateTime.friday){
+      return 1;
+    }
+    else{
+      return 2;
+    }
+  }
+
   checkTimeForSafetyReminders(){
+  checkTimeForSafetyReminders() {
     var dt = DateTime.now();
     int checkDay = checkDayForShuttle();
 
@@ -400,20 +415,6 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  int checkDayForShuttle(){
-    var dt = DateTime.now();
-
-    if((dt.weekday == DateTime.monday) || (dt.weekday == DateTime.tuesday) || (dt.weekday == DateTime.wednesday) || (dt.weekday == DateTime.thursday)){
-      return 0;
-    }
-    else if(dt.weekday == DateTime.friday){
-      return 1;
-    }
-    else{
-      return 2;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -433,13 +434,13 @@ class _MainScreenState extends State<MainScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) => showSafetyEscortBanner());
     }
   }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       key: sKey,
-
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.person),
@@ -479,8 +480,8 @@ class _MainScreenState extends State<MainScreen> {
               _controllerGoogleMap.complete(controller);
               newGoogleMapController = controller;
 
-                // for black theme Google Map
-                blackThemeGoogleMap();
+              // for black theme Google Map
+              blackThemeGoogleMap();
 
                 setState(() {
                   bottomPaddingOfMap = 240;
@@ -864,4 +865,4 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-}
+  }
