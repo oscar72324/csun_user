@@ -1,14 +1,16 @@
 import 'dart:async';
+import 'package:csun_user/assistants/geofire_assistant.dart';
 import 'package:csun_user/mainScreens/search_places_screen.dart';
+import 'package:csun_user/models/active_nearby_available_drivers.dart';
 import 'package:csun_user/page/safety_escort.dart';
 import 'package:csun_user/widgets/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+// import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../widgets/navigation_drawer_widget.dart';
@@ -54,7 +56,8 @@ class _MainScreenState extends State<MainScreen> {
   bool openNavigationDrawer = true;
 
   bool checkSafetyEscortBannerTime = false;
-  bool checkShuttleBannerTime = false;
+  bool checkWeekdayShuttleBannerTime = false;
+  bool checkWeekendShuttleBannerTime = false;
 
   blackThemeGoogleMap() {
     newGoogleMapController!.setMapStyle('''
@@ -274,23 +277,104 @@ class _MainScreenState extends State<MainScreen> {
     userEmail = userModelCurrentInfo!.email!;
   }
 
+  initializeGeofireListener(){
+    Geofire.initialize("activeDrivers");
+
+    Geofire.queryAtLocation(userCurrentPosition!.latitude, userCurrentPosition!.longitude, 10)!.listen((map) {
+        print(map);
+        if (map != null) {
+          var callBack = map['callBack'];
+
+          //latitude will be retrieved from map['latitude']
+          //longitude will be retrieved from map['longitude']
+
+          switch (callBack) {
+            // when a driver becomes active
+            case Geofire.onKeyEntered:
+              ActiveNearbyAvailableDrivers activeNearbyAvailableDriver = ActiveNearbyAvailableDrivers();
+              activeNearbyAvailableDriver.locationLatitude = map['latitude'];
+              activeNearbyAvailableDriver.locationLongitude = map['longitude'];
+              activeNearbyAvailableDriver.driverId = map['key'];
+
+              GeoFireAssistant.activeNearbyAvailableDriversList.add(activeNearbyAvailableDriver);
+              break;
+
+            // when a driver goes offline (inactive)
+            case Geofire.onKeyExited:
+              GeoFireAssistant.deleteOfflineDriverFromList(map['key']);
+              break;
+
+            // when a driver moves, update driver location
+            case Geofire.onKeyMoved:
+              ActiveNearbyAvailableDrivers activeNearbyAvailableDriver = ActiveNearbyAvailableDrivers();
+              activeNearbyAvailableDriver.locationLatitude = map['latitude'];
+              activeNearbyAvailableDriver.locationLongitude = map['longitude'];
+              activeNearbyAvailableDriver.driverId = map['key'];
+
+              GeoFireAssistant.updateAvailableDriverLocation(activeNearbyAvailableDriver);
+              break;
+
+            case Geofire.onGeoQueryReady:
+              break;
+          }
+        }
+
+        setState(() {});
+      }
+    );
+  }
+
   checkTimeForSafetyReminders(){
     var dt = DateTime.now();
+    int checkDay = checkDayForShuttle();
 
-    if(dt.hour > 5){
-      checkShuttleBannerTime = true;
-      if(dt.hour > 10){
-        checkSafetyEscortBannerTime = true;
+    if(checkDay == 0){
+      if(dt.hour > 7){
+        checkWeekdayShuttleBannerTime = true;
+        if(dt.hour > 19){
+          checkSafetyEscortBannerTime = true;
+        }
+        if(dt.hour > 21){
+          checkWeekdayShuttleBannerTime = false;
+        }
       }
-      if(dt.hour > 21){
-        checkShuttleBannerTime = false;
+      else{
+        checkWeekdayShuttleBannerTime = false;
+        checkSafetyEscortBannerTime = false;
+      }
+    }
+    else if(checkDay == 1){
+      checkSafetyEscortBannerTime = false;
+      if(dt.hour > 7){
+        checkWeekdayShuttleBannerTime = true;
+        if(dt.hour > 16.5){
+          checkWeekdayShuttleBannerTime = false;
+        }
+      }
+      else{
+        checkWeekdayShuttleBannerTime = false;
       }
     }
     else{
-      checkShuttleBannerTime = false;
       checkSafetyEscortBannerTime = false;
+      if(dt.hour > 7){
+        checkWeekendShuttleBannerTime = true;
+      }
     }
+  }
 
+  int checkDayForShuttle(){
+    var dt = DateTime.now();
+
+    if((dt.weekday == DateTime.monday) || (dt.weekday == DateTime.tuesday) || (dt.weekday == DateTime.wednesday) || (dt.weekday == DateTime.thursday)){
+      return 0;
+    }
+    else if(dt.weekday == DateTime.friday){
+      return 1;
+    }
+    else{
+      return 2;
+    }
   }
 
   @override
@@ -300,8 +384,12 @@ class _MainScreenState extends State<MainScreen> {
     locateUserPosition();
 
     checkTimeForSafetyReminders();
-    if(checkShuttleBannerTime){
-      WidgetsBinding.instance.addPostFrameCallback((_) => showShuttleBanner());
+    if(checkWeekdayShuttleBannerTime){
+      WidgetsBinding.instance.addPostFrameCallback((_) => showWeekdayShuttleBanner());
+    }
+
+    if(checkWeekendShuttleBannerTime){
+      WidgetsBinding.instance.addPostFrameCallback((_) => showWeekendShuttleBanner());
     }
 
     if(checkSafetyEscortBannerTime){
@@ -507,7 +595,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
 
                         ElevatedButton(
-                          child: const Text("Check shuttle / Request ride"),
+                          child: const Text("Start route"),
                           onPressed: () {
                             // on press
                           },
@@ -661,9 +749,10 @@ class _MainScreenState extends State<MainScreen> {
           color: Colors.white,
         ),
         backgroundColor: Colors.black,
+        elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
-          child: Icon(Icons.access_time_sharp),
+          child: Icon(Icons.directions_walk_rounded),
         ),
         actions: [
           ElevatedButton(
@@ -683,17 +772,18 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  void showShuttleBanner(){
+  void showWeekdayShuttleBanner(){
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
-        content: const Text("The shuttle runs until 9pm"),
+        content: const Text("The housing shuttle can bring you to/from the dorms, F10 parking lot,k and campus"),
         contentTextStyle: const TextStyle(
           color: Colors.white,
         ),
         backgroundColor: Colors.black,
+        elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
-          child: Icon(Icons.access_time_sharp),
+          child: Icon(Icons.directions_bus_filled_rounded),
         ),
         actions: [
           ElevatedButton(
@@ -706,6 +796,31 @@ class _MainScreenState extends State<MainScreen> {
             child: const Text("See Route"),
               onPressed: (){
 
+              },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showWeekendShuttleBanner(){
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        content: const Text("The shuttle is not running today"),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
+        elevation: 10,
+        forceActionsBelow: true,
+        leading: const CircleAvatar(
+          child: Icon(Icons.bus_alert_rounded),
+        ),
+        actions: [
+          ElevatedButton(
+            child: const Text("Dismiss"),
+              onPressed: (){
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
               },
           ),
         ],
