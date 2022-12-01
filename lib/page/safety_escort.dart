@@ -3,18 +3,19 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class SafetyEscort extends StatelessWidget{
-  String _phoneNumber = "8185227359";
+  final _line1 = "8186775042";
+  final _line2 = "8186775048";
 
   // const SafetyEscort({super,key})
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          shape: Border(
+          shape: const Border(
               bottom: BorderSide(
             color: Colors.black,
             width: 0.5,
           )),
-          iconTheme: IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
           toolbarHeight: 100,
           // title: Text("Call us for a Safety Escort"),
           centerTitle: true,
@@ -33,8 +34,8 @@ class SafetyEscort extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              child: Padding(
-                padding: const EdgeInsets.only(
+              child: const Padding(
+                padding: EdgeInsets.only(
                   top: 40,
                   right: 40,
                   left: 40,
@@ -48,8 +49,13 @@ class SafetyEscort extends StatelessWidget{
               ),
             ),
             Container(
-              child: Padding(
-                padding: const EdgeInsets.all(40),
+              child: const Padding(
+                padding: EdgeInsets.only(
+                  top: 40, 
+                  left: 40,
+                  right: 40,
+                  bottom: 10
+                ),
                 child: Text(
                   "NOTE: A police officer is availabe after 11:00 p.m. all other times when Matador Patrol is not on duty.",
                   style: TextStyle(fontWeight: FontWeight.w700),
@@ -57,7 +63,7 @@ class SafetyEscort extends StatelessWidget{
                 ),
               ),
             ),
-            Divider(
+            const Divider(
               height: 50,
               thickness: 2,
               indent: 50,
@@ -65,9 +71,9 @@ class SafetyEscort extends StatelessWidget{
               color: Color.fromARGB(255, 104, 104, 104),
             ),
             Container(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 30,
+              child: const Padding(
+                padding: EdgeInsets.only(
+                  top: 10,
                   left: 40,
                   right: 40,
                   bottom: 10,
@@ -82,8 +88,8 @@ class SafetyEscort extends StatelessWidget{
               ),
             ),
             Container(
-              child: Padding(
-                padding: const EdgeInsets.only(
+              child: const Padding(
+                padding: EdgeInsets.only(
                   top: 10,
                   right: 40,
                   left: 40,
@@ -93,8 +99,8 @@ class SafetyEscort extends StatelessWidget{
               ),
             ),
             Container(
-              child: Padding(
-                padding: const EdgeInsets.only(
+              child: const Padding(
+                padding: EdgeInsets.only(
                   top: 10,
                   right: 40,
                   left: 40,
@@ -104,8 +110,8 @@ class SafetyEscort extends StatelessWidget{
               ),
             ),
             Container(
-              child: Padding(
-                padding: const EdgeInsets.only(
+              child: const Padding(
+                padding: EdgeInsets.only(
                   top: 10,
                   right: 40,
                   left: 40,
@@ -115,8 +121,8 @@ class SafetyEscort extends StatelessWidget{
               ),
             ),
             Container(
-              child: Padding(
-                padding: const EdgeInsets.only(
+              child: const Padding(
+                padding: EdgeInsets.only(
                   top: 10,
                   right: 40,
                   left: 40,
@@ -126,29 +132,64 @@ class SafetyEscort extends StatelessWidget{
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 60, left: 143),
-              child: SizedBox(
-                height: 50,
-                width: 100,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red,
-                    onPrimary: Colors.white,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    side: BorderSide(width: 1),
+              padding: const EdgeInsets.only(top: 50),
+              child: Column(
+                children: [
+                  Center(
+                    child: SizedBox(
+                        height: 50,
+                        width: 150,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            side: const BorderSide(width: 1),
+                          ),
+                          onPressed: () async {
+                            final call1 = 'tel:$_line1';
+                            // final _text = 'sms:$_phoneNumber';
+                            if (await canLaunchUrlString(call1)) {
+                              await launchUrlString(call1);
+                            }
+                          },
+                          child: const Text("Call Line 1"),
+                        ),
+                      ),
                   ),
-                  onPressed: () async {
-                    final _call = 'tel:$_phoneNumber';
-                    final _text = 'sms:$_phoneNumber';
-                    if (await canLaunchUrlString(_call)) {
-                      await launch(_call);
-                    }
-                  },
-                  child: Text("Call"),
-                ),
+                  const SizedBox(
+                    height: 25,
+                    width: 0,
+                  ),
+                    Center(
+                      child: SizedBox(
+                        height: 50,
+                        width: 150,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            side: const BorderSide(width: 1),
+                          ),
+                          onPressed: () async {
+                            final call2 = 'tel:$_line2';
+                            // final _text = 'sms:$_phoneNumber';
+                            if (await canLaunchUrlString(call2)) {
+                              await launchUrlString(call2);
+                            }
+                          },
+                          child: const Text("Call Line 2"),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],

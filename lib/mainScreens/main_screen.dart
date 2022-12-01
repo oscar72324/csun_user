@@ -389,6 +389,9 @@ class _MainScreenState extends State<MainScreen> {
         if(dt.hour > 21){
           checkWeekdayShuttleBannerTime = false;
         }
+        if(dt.hour > 23){
+          checkSafetyEscortBannerTime = false;
+        }
       }
       else{
         checkWeekdayShuttleBannerTime = false;
