@@ -381,6 +381,7 @@ class _MainScreenState extends State<MainScreen> {
     int checkDay = checkDayForShuttle();
 
     if(checkDay == 0){
+      checkWeekendShuttleBannerTime = false;
       if(dt.hour > 7){
         checkWeekdayShuttleBannerTime = true;
         if(dt.hour > 19){
@@ -399,6 +400,7 @@ class _MainScreenState extends State<MainScreen> {
       }
     }
     else if(checkDay == 1){
+      checkWeekendShuttleBannerTime = false;
       checkSafetyEscortBannerTime = false;
       if(dt.hour > 7){
         checkWeekdayShuttleBannerTime = true;
@@ -591,7 +593,7 @@ class _MainScreenState extends State<MainScreen> {
                             });
 
                             // draw routes - draw polylines
-                            await drawPolylineFromOriginToDestination();
+                            // await drawPolylineFromOriginToDestination();
                           }
                         },
                         child: Row(
@@ -639,6 +641,7 @@ class _MainScreenState extends State<MainScreen> {
                           child: const Text("Start route"),
                           onPressed: () {
                             // on press
+                            drawShuttlePolyline();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
@@ -659,126 +662,179 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Future<void> drawPolylineFromOriginToDestination() async {
-    var originPosition =
-        Provider.of<AppInfo>(context, listen: false).userPickUpLocation;
-    var destinationPosition =
-        Provider.of<AppInfo>(context, listen: false).userDropOffLocation;
+  // Future<void> drawPolylineFromOriginToDestination() async {
+  //   var originPosition =
+  //       Provider.of<AppInfo>(context, listen: false).userPickUpLocation;
+  //   var destinationPosition =
+  //       Provider.of<AppInfo>(context, listen: false).userDropOffLocation;
 
-    var originLatLng = LatLng(
-        originPosition!.locationLatitude!, originPosition!.locationLongitude!);
-    var destinationLatLng = LatLng(destinationPosition!.locationLatitude!,
-        destinationPosition!.locationLongitude!);
+  //   var originLatLng = LatLng(
+  //       originPosition!.locationLatitude!, originPosition!.locationLongitude!);
+  //   var destinationLatLng = LatLng(destinationPosition!.locationLatitude!,
+  //       destinationPosition!.locationLongitude!);
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) =>
-          ProgressDialog(message: "Please wait..."),
-    );
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) =>
+  //         ProgressDialog(message: "Please wait..."),
+  //   );
 
-    var directionDetailsInfo =
-        await AssistantMethods.obtainOriginToDestinationDirectionDetails(
-            originLatLng, destinationLatLng);
+  //   var directionDetailsInfo =
+  //       await AssistantMethods.obtainOriginToDestinationDirectionDetails(
+  //           originLatLng, destinationLatLng);
 
-    Navigator.pop(context);
+  //   Navigator.pop(context);
 
-    // print("Points = ${directionDetailsInfo!.e_points}");
+  //   // print("Points = ${directionDetailsInfo!.e_points}");
 
-    PolylinePoints pPoints = PolylinePoints();
-    List<PointLatLng> decodedPolyLinePointsResultList =
-        pPoints.decodePolyline(directionDetailsInfo!.e_points!);
+  //   PolylinePoints pPoints = PolylinePoints();
+  //   List<PointLatLng> decodedPolyLinePointsResultList =
+  //       pPoints.decodePolyline(directionDetailsInfo!.e_points!);
 
-    pLineCoordinatesList.clear();
+  //   pLineCoordinatesList.clear();
 
-    if (decodedPolyLinePointsResultList.isNotEmpty) {
-      decodedPolyLinePointsResultList.forEach((PointLatLng pointLatLng) {
-        pLineCoordinatesList
-            .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
-      });
-    }
-    polyLineSet.clear();
+  //   if (decodedPolyLinePointsResultList.isNotEmpty) {
+  //     decodedPolyLinePointsResultList.forEach((PointLatLng pointLatLng) {
+  //       pLineCoordinatesList
+  //           .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
+  //     });
+  //   }
+  //   polyLineSet.clear();
 
+  //   setState(() {
+  //     Polyline polyline = Polyline(
+  //       color: Colors.redAccent,
+  //       polylineId: const PolylineId("PolylineID"),
+  //       jointType: JointType.round,
+  //       points: pLineCoordinatesList,
+  //       startCap: Cap.roundCap,
+  //       endCap: Cap.roundCap,
+  //       geodesic: true,
+  //     );
+  //     polyLineSet.add(polyline);
+  //   });
+  //   LatLngBounds boundsLatLng;
+  //   if ((originLatLng.latitude > destinationLatLng.latitude) &&
+  //       (originLatLng.longitude > destinationLatLng.longitude)) {
+  //     boundsLatLng =
+  //         LatLngBounds(southwest: destinationLatLng, northeast: originLatLng);
+  //   } else if (originLatLng.longitude > destinationLatLng.longitude) {
+  //     boundsLatLng = LatLngBounds(
+  //         southwest: LatLng(originLatLng.latitude, destinationLatLng.longitude),
+  //         northeast:
+  //             LatLng(destinationLatLng.latitude, originLatLng.longitude));
+  //   } else if (originLatLng.latitude > destinationLatLng.latitude) {
+  //     boundsLatLng = LatLngBounds(
+  //         southwest: LatLng(destinationLatLng.latitude, originLatLng.longitude),
+  //         northeast:
+  //             LatLng(originLatLng.latitude, destinationLatLng.longitude));
+  //   } else {
+  //     boundsLatLng =
+  //         LatLngBounds(southwest: originLatLng, northeast: destinationLatLng);
+  //   }
+
+  //   newGoogleMapController!
+  //       .animateCamera(CameraUpdate.newLatLngBounds(boundsLatLng, 65));
+
+  //   Marker originMarker = Marker(
+  //     markerId: const MarkerId("originID"),
+  //     infoWindow: InfoWindow(
+  //       title: originPosition.locationName,
+  //       snippet: "Origin",
+  //     ),
+  //     position: originLatLng,
+  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
+  //   );
+
+  //   Marker destinationMarker = Marker(
+  //     markerId: const MarkerId("destinationID"),
+  //     infoWindow: InfoWindow(
+  //       title: destinationPosition.locationName,
+  //       snippet: "Destination",
+  //     ),
+  //     position: destinationLatLng,
+  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+  //   );
+
+  //   setState(() {
+  //     markersSet.add(originMarker);
+  //     markersSet.add(destinationMarker);
+  //   });
+
+  //   Circle originCircle = Circle(
+  //     circleId: const CircleId("originID"),
+  //     fillColor: Colors.grey,
+  //     radius: 12,
+  //     strokeWidth: 3,
+  //     strokeColor: Colors.white,
+  //     center: originLatLng,
+  //   );
+
+  //   Circle destinationCircle = Circle(
+  //     circleId: const CircleId("destinationID"),
+  //     fillColor: Colors.red,
+  //     radius: 12,
+  //     strokeWidth: 3,
+  //     strokeColor: Colors.white,
+  //     center: destinationLatLng,
+  //   );
+
+  //   setState(() {
+  //     circleSet.add(originCircle);
+  //     circleSet.add(destinationCircle);
+  //   });
+  // }
+  
+  void drawShuttlePolyline(){
     setState(() {
-      Polyline polyline = Polyline(
-        color: Colors.redAccent,
-        polylineId: const PolylineId("PolylineID"),
-        jointType: JointType.round,
-        points: pLineCoordinatesList,
-        startCap: Cap.roundCap,
-        endCap: Cap.roundCap,
-        geodesic: true,
-      );
-      polyLineSet.add(polyline);
+      polyLineSet.clear();
+      markersSet.clear();
+      circleSet.clear();
     });
-    LatLngBounds boundsLatLng;
-    if ((originLatLng.latitude > destinationLatLng.latitude) &&
-        (originLatLng.longitude > destinationLatLng.longitude)) {
-      boundsLatLng =
-          LatLngBounds(southwest: destinationLatLng, northeast: originLatLng);
-    } else if (originLatLng.longitude > destinationLatLng.longitude) {
-      boundsLatLng = LatLngBounds(
-          southwest: LatLng(originLatLng.latitude, destinationLatLng.longitude),
-          northeast:
-              LatLng(destinationLatLng.latitude, originLatLng.longitude));
-    } else if (originLatLng.latitude > destinationLatLng.latitude) {
-      boundsLatLng = LatLngBounds(
-          southwest: LatLng(destinationLatLng.latitude, originLatLng.longitude),
-          northeast:
-              LatLng(originLatLng.latitude, destinationLatLng.longitude));
-    } else {
-      boundsLatLng =
-          LatLngBounds(southwest: originLatLng, northeast: destinationLatLng);
-    }
 
-    newGoogleMapController!
-        .animateCamera(CameraUpdate.newLatLngBounds(boundsLatLng, 65));
-
-    Marker originMarker = Marker(
-      markerId: const MarkerId("originID"),
-      infoWindow: InfoWindow(
-        title: originPosition.locationName,
-        snippet: "Origin",
-      ),
-      position: originLatLng,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
+    const Polyline shuttlePolyline = Polyline(
+      polylineId: PolylineId('shuttlePolyline'),
+      points: [
+        LatLng(34.241232, -118.526771),
+        LatLng(34.240944, -118.526793),
+        LatLng(34.240944, -118.527319),
+        LatLng(34.242718, -118.527417),
+        LatLng(34.24273, -118.52823),
+        LatLng(34.243063, -118.528234),
+        LatLng(34.243013, -118.529043),
+        LatLng(34.244594, -118.529054),
+        LatLng(34.24458, -118.52734),
+        LatLng(34.250326, -118.527385),
+      ],
+      width: 5,
+      color: Colors.yellow,
     );
-
-    Marker destinationMarker = Marker(
-      markerId: const MarkerId("destinationID"),
-      infoWindow: InfoWindow(
-        title: destinationPosition.locationName,
-        snippet: "Destination",
-      ),
-      position: destinationLatLng,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-    );
-
     setState(() {
-      markersSet.add(originMarker);
-      markersSet.add(destinationMarker);
+      polyLineSet.add(shuttlePolyline);
     });
 
-    Circle originCircle = Circle(
-      circleId: const CircleId("originID"),
-      fillColor: Colors.grey,
-      radius: 12,
-      strokeWidth: 3,
-      strokeColor: Colors.white,
-      center: originLatLng,
+    final Marker spiritPlaza = Marker(
+      markerId: const MarkerId('spiritPlaza'),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+      position: const LatLng(34.241232, -118.526771),
     );
 
-    Circle destinationCircle = Circle(
-      circleId: const CircleId("destinationID"),
-      fillColor: Colors.red,
-      radius: 12,
-      strokeWidth: 3,
-      strokeColor: Colors.white,
-      center: destinationLatLng,
+    final Marker f10Parking = Marker(
+      markerId: const MarkerId('f10Parking'),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+      position: const LatLng(34.250326, -118.527385),
+    );
+
+    final Marker housingStop = Marker(
+      markerId: const MarkerId('housingStop'),
+      icon: BitmapDescriptor.defaultMarkerWithHue((BitmapDescriptor.hueMagenta)),
+      position: const LatLng(34.247323, -118.527399),
     );
 
     setState(() {
-      circleSet.add(originCircle);
-      circleSet.add(destinationCircle);
+      markersSet.add(spiritPlaza);
+      markersSet.add(f10Parking);
+      markersSet.add(housingStop);
     });
   }
 
