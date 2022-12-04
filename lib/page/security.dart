@@ -26,7 +26,7 @@ class Security extends StatelessWidget{
               bottom: 0,
             ),
             child: Text(
-              "Emergency calls will direct to 911.",
+              "Emergency calls will direct to 911",
               style: TextStyle(fontWeight: FontWeight.w800),
               textAlign: TextAlign.center,
             ),

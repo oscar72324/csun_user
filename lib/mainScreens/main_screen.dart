@@ -60,6 +60,8 @@ class _MainScreenState extends State<MainScreen> {
   bool checkWeekdayShuttleBannerTime = false;
   bool checkWeekendShuttleBannerTime = false;
 
+  String routeButtonText = "Start route";
+
   blackThemeGoogleMap() {
     newGoogleMapController!.setMapStyle('''
                     [
@@ -360,27 +362,10 @@ class _MainScreenState extends State<MainScreen> {
       });
     });
   }
-
-  int checkDayForShuttle(){
+  checkTimeForSafetyReminders() {
     var dt = DateTime.now();
 
     if((dt.weekday == DateTime.monday) || (dt.weekday == DateTime.tuesday) || (dt.weekday == DateTime.wednesday) || (dt.weekday == DateTime.thursday)){
-      return 0;
-    }
-    else if(dt.weekday == DateTime.friday){
-      return 1;
-    }
-    else{
-      return 2;
-    }
-  }
-
-  checkTimeForSafetyReminders(){
-  checkTimeForSafetyReminders() {
-    var dt = DateTime.now();
-    int checkDay = checkDayForShuttle();
-
-    if(checkDay == 0){
       checkWeekendShuttleBannerTime = false;
       if(dt.hour > 7){
         checkWeekdayShuttleBannerTime = true;
@@ -399,7 +384,7 @@ class _MainScreenState extends State<MainScreen> {
         checkSafetyEscortBannerTime = false;
       }
     }
-    else if(checkDay == 1){
+    else if(dt.weekday == DateTime.friday){
       checkWeekendShuttleBannerTime = false;
       checkSafetyEscortBannerTime = false;
       if(dt.hour > 7){
@@ -430,15 +415,13 @@ class _MainScreenState extends State<MainScreen> {
     if(checkWeekdayShuttleBannerTime){
       WidgetsBinding.instance.addPostFrameCallback((_) => showWeekdayShuttleBanner());
     }
-
-    if(checkWeekendShuttleBannerTime){
+    else{
       WidgetsBinding.instance.addPostFrameCallback((_) => showWeekendShuttleBanner());
     }
 
     if(checkSafetyEscortBannerTime){
       WidgetsBinding.instance.addPostFrameCallback((_) => showSafetyEscortBanner());
     }
-  }
   }
 
   @override
@@ -638,10 +621,22 @@ class _MainScreenState extends State<MainScreen> {
                       ),
 
                         ElevatedButton(
-                          child: const Text("Start route"),
+                          child: Text(routeButtonText),
                           onPressed: () {
                             // on press
-                            drawShuttlePolyline();
+                            if(routeButtonText == "Start route"){
+                              drawShuttlePolyline();
+                              setState(() {
+                                routeButtonText = "End route";
+                              });
+                            }
+                            else{
+                              polyLineSet.clear();
+                              markersSet.clear();
+                              setState(() {
+                                routeButtonText = "Start route";
+                              });
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
@@ -785,7 +780,7 @@ class _MainScreenState extends State<MainScreen> {
   //   });
   // }
   
-  void drawShuttlePolyline(){
+  void drawShuttlePolyline() async {
     setState(() {
       polyLineSet.clear();
       markersSet.clear();
@@ -815,19 +810,22 @@ class _MainScreenState extends State<MainScreen> {
 
     final Marker spiritPlaza = Marker(
       markerId: const MarkerId('spiritPlaza'),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+      infoWindow: const InfoWindow(title: "Spirit Plaza Stop"),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       position: const LatLng(34.241232, -118.526771),
     );
 
     final Marker f10Parking = Marker(
       markerId: const MarkerId('f10Parking'),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+      infoWindow: const InfoWindow(title: "F10 Parking Lot Stop"),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       position: const LatLng(34.250326, -118.527385),
     );
 
     final Marker housingStop = Marker(
       markerId: const MarkerId('housingStop'),
-      icon: BitmapDescriptor.defaultMarkerWithHue((BitmapDescriptor.hueMagenta)),
+      infoWindow: const InfoWindow(title: "Housing Stop"),
+      icon: BitmapDescriptor.defaultMarkerWithHue((BitmapDescriptor.hueRed)),
       position: const LatLng(34.247323, -118.527399),
     );
 
@@ -872,7 +870,7 @@ class _MainScreenState extends State<MainScreen> {
   void showWeekdayShuttleBanner(){
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
-        content: const Text("The housing shuttle can bring you to/from the dorms, F10 parking lot,k and campus"),
+        content: const Text("The housing shuttle can bring you to/from the dorms, F10 parking lot, and campus"),
         contentTextStyle: const TextStyle(
           color: Colors.white,
         ),
