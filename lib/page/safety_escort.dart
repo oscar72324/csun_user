@@ -57,7 +57,7 @@ class SafetyEscort extends StatelessWidget{
                   bottom: 10
                 ),
                 child: Text(
-                  "NOTE: A police officer is availabe after 11:00 p.m. all other times when Matador Patrol is not on duty.",
+                  "NOTE: A police officer is available after 11:00 p.m. all other times when Matador Patrol is not on duty.",
                   style: TextStyle(fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                 ),

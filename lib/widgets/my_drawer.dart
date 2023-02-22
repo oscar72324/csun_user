@@ -1,4 +1,6 @@
 import 'package:csun_user/global/global.dart';
+import 'package:csun_user/mainScreens/about_screen.dart';
+import 'package:csun_user/mainScreens/profile_screen.dart';
 import 'package:csun_user/splashScreen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -71,21 +73,9 @@ class _MyDrawerState extends State<MyDrawer> {
 
           //drawer body
           GestureDetector(
-            onTap: () {},
-            child: const ListTile(
-              leading: Icon(
-                Icons.history,
-                color: Colors.white,
-              ),
-              title: Text(
-                "History",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-
-          GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (c) => ProfileScreen()));
+            },
             child: const ListTile(
               leading: Icon(
                 Icons.person,
@@ -99,10 +89,12 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
 
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (c) => AboutScreen()));
+            },
             child: const ListTile(
               leading: Icon(
-                Icons.info,
+                Icons.question_mark_rounded,
                 color: Colors.white,
               ),
               title: Text(

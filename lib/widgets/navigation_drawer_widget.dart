@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../page/safety_escort.dart';
 import '../page/shuttle.dart';
 import '../page/security.dart';
+import '../page/metro_bus.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   final padding = EdgeInsets.symmetric(horizontal: 20);
@@ -33,6 +34,11 @@ class NavigationDrawerWidget extends StatelessWidget {
                     text: 'Security',
                     icon: Icons.local_police,
                     onClicked: () => selectedItem(context, 2),
+                  ),const SizedBox(height: 16),
+                  buildMenuItem(
+                    text: 'Metrolink',
+                    icon: Icons.airport_shuttle_rounded,
+                    onClicked: () => selectedItem(context, 3),
                   ),
                 ],
               ),
@@ -113,6 +119,11 @@ class NavigationDrawerWidget extends StatelessWidget {
       case 2:
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => Security(),
+        ));
+        break;
+      case 3:
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Metro(),
         ));
         break;
     }

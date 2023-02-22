@@ -50,11 +50,12 @@ class _MainScreenState extends State<MainScreen> {
   Set<Marker> markersSet = {};
   Set<Circle> circleSet = {};
 
-  String userName = "Your Name";
-  String userEmail = "Your Email";
+  String userName = userModelCurrentInfo!.name!;
+  String userEmail = userModelCurrentInfo!.email!;
 
   bool openNavigationDrawer = true;
   bool activeNearbyDriverKeysLoaded = false;
+  BitmapDescriptor? activeNearbyIcon;
 
   bool checkSafetyEscortBannerTime = false;
   bool checkWeekdayShuttleBannerTime = false;
@@ -328,6 +329,7 @@ class _MainScreenState extends State<MainScreen> {
 
             // display online active drivers on the user map
             case Geofire.onGeoQueryReady:
+              activeNearbyDriverKeysLoaded = true;
               displayActiveDriversOnUsersMap();
               break;
           }
@@ -350,7 +352,7 @@ class _MainScreenState extends State<MainScreen> {
         Marker marker = Marker(
           markerId: MarkerId(eachDriver.driverId!),
           position: eachDriverActivePosition,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+          icon: activeNearbyIcon!,
           rotation: 360,
           );
 
@@ -362,6 +364,16 @@ class _MainScreenState extends State<MainScreen> {
       });
     });
   }
+
+  createActiveNearbyDriverIconMarker(){
+    if(activeNearbyIcon == null){
+      ImageConfiguration imageConfiguration = createLocalImageConfiguration(context, size: const Size(2, 2));
+      BitmapDescriptor.fromAssetImage(imageConfiguration, "images/car.png").then((value){
+        activeNearbyIcon = value;
+      });
+    }
+  }
+
   checkTimeForSafetyReminders() {
     var dt = DateTime.now();
 
@@ -836,6 +848,14 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void hideShuttlePolyline(){
+    setState(() {
+      polyLineSet.clear();
+      markersSet.clear();
+      circleSet.clear();
+    });
+  }
+
   void showSafetyEscortBanner(){
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
@@ -859,7 +879,8 @@ class _MainScreenState extends State<MainScreen> {
           ElevatedButton(
             child: const Text("Call"),
               onPressed: (){
-
+                // go to the Safety Escort page
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
               },
           ),
         ],
@@ -890,11 +911,39 @@ class _MainScreenState extends State<MainScreen> {
           ElevatedButton(
             child: const Text("See Route"),
               onPressed: (){
-
+                drawShuttlePolyline();
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                showHideShuttleRouteBanner();
               },
           ),
         ],
       ),
+    );
+  }
+
+  void showHideShuttleRouteBanner(){
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        content: const Text("The housing shuttle route is currently showing"),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
+        elevation: 10,
+        forceActionsBelow: true,
+        leading: const CircleAvatar(
+          child: Icon(Icons.directions_bus_filled_rounded),
+        ),
+        actions: [
+          ElevatedButton(
+            child: const Text("Hide Route"),
+              onPressed: (){
+                hideShuttlePolyline();
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+              },
+          ),
+        ],
+      )
     );
   }
 
