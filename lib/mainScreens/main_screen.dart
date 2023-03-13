@@ -40,6 +40,10 @@ class _MainScreenState extends State<MainScreen> {
   Position? userCurrentPosition;
   var geoLocator = Geolocator();
 
+  LatLng? UniCampusNE = LatLng(34.254058333192056, -118.52339991065044);
+  LatLng? UniCampusSW = LatLng(34.23556440815254, -118.53379222163633);
+  var nLat, nLong, sLat, sLong;
+
   LocationPermission? _locationPermission;
   bool? locationPermissionStatus;
   double bottomPaddingOfMap = 0;
@@ -57,6 +61,7 @@ class _MainScreenState extends State<MainScreen> {
   bool activeNearbyDriverKeysLoaded = false;
   BitmapDescriptor? activeNearbyIcon;
 
+  bool checkShuttleToggle = false;
   bool checkSafetyEscortBannerTime = false;
   bool checkWeekdayShuttleBannerTime = false;
   bool checkWeekendShuttleBannerTime = false;
@@ -417,11 +422,31 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  checkMapBounds(){
+    if(UniCampusSW!.latitude <= UniCampusNE!.latitude){
+      sLat = UniCampusSW!.latitude;
+      nLat = UniCampusNE!.latitude;
+    }
+    else{
+      sLat = UniCampusNE!.latitude;
+      nLat = UniCampusSW!.latitude;
+    }
+    if(UniCampusSW!.longitude <= UniCampusNE!.longitude){
+      sLong = UniCampusSW!.longitude;
+      nLong = UniCampusNE!.longitude;
+    }
+    else{
+      sLong = UniCampusNE!.longitude;
+      nLong = UniCampusSW!.longitude;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
     locateUserPosition();
+    checkMapBounds();
 
     checkTimeForSafetyReminders();
     if(checkWeekdayShuttleBannerTime){
@@ -473,6 +498,7 @@ class _MainScreenState extends State<MainScreen> {
             zoomControlsEnabled: true,
             zoomGesturesEnabled: true,
             initialCameraPosition: _center,
+            cameraTargetBounds: CameraTargetBounds(LatLngBounds(northeast: LatLng(nLat, nLong), southwest: LatLng(sLat, sLong))),
             polylines: polyLineSet,
             markers: markersSet,
             circles: circleSet,
@@ -512,6 +538,45 @@ class _MainScreenState extends State<MainScreen> {
           //     ),
           //   ),
           // ),
+
+          // emergency call button
+          Positioned(
+            bottom: 320,
+            left: 10,
+            child: FloatingActionButton(
+              backgroundColor: Colors.redAccent,
+              onPressed:() {
+                // call 911
+              },
+              child: const Icon(
+                Icons.contact_phone_rounded,
+                size: 35,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          
+          // shuttle route toggle button
+          Positioned(
+            bottom: 320,
+            right: 10,
+            child: FloatingActionButton(
+              backgroundColor: Colors.redAccent,
+              onPressed:() {
+                if(checkShuttleToggle){
+                  hideShuttlePolyline();
+                }
+                else{
+                  drawShuttlePolyline();
+                }
+              },
+              child: const Icon(
+                Icons.airport_shuttle_rounded,
+                size: 35,
+                color: Colors.white,
+              ),
+            ),
+          ),
 
           // search bar UI
           Positioned(
@@ -799,6 +864,8 @@ class _MainScreenState extends State<MainScreen> {
       circleSet.clear();
     });
 
+    checkShuttleToggle = true;
+
     const Polyline shuttlePolyline = Polyline(
       polylineId: PolylineId('shuttlePolyline'),
       points: [
@@ -819,7 +886,6 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       polyLineSet.add(shuttlePolyline);
     });
-
     final Marker spiritPlaza = Marker(
       markerId: const MarkerId('spiritPlaza'),
       infoWindow: const InfoWindow(title: "Spirit Plaza Stop"),
@@ -854,6 +920,8 @@ class _MainScreenState extends State<MainScreen> {
       markersSet.clear();
       circleSet.clear();
     });
+
+    checkShuttleToggle = false;
   }
 
   void showSafetyEscortBanner(){

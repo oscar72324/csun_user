@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../global/global.dart';
+
 class Shuttle extends StatelessWidget{
   // const Shuttle({super.key});
   Widget build(BuildContext context) => Scaffold(
@@ -138,31 +140,32 @@ class Shuttle extends StatelessWidget{
             child: Text("3) Inside the F10 parking lot on Lindley and Lassen"),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 50),
-          child: Center(
-            child: SizedBox(
-              height: 50,
-              width: 125,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.red,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)
-                  ),
-                  side: const BorderSide(width: 1),
-                ),
-                onPressed: (){
-                  // draw polyline
-                  Navigator.pop(context);
-                },
-                child: const Text("See Route"),
-              ),
-            ),
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(top: 50),
+        //   child: Center(
+        //     child: SizedBox(
+        //       height: 50,
+        //       width: 125,
+        //       child: ElevatedButton(
+        //         style: ElevatedButton.styleFrom(
+        //           foregroundColor: Colors.white,
+        //           backgroundColor: Colors.red,
+        //           elevation: 5,
+        //           shape: RoundedRectangleBorder(
+        //             borderRadius: BorderRadius.circular(30)
+        //           ),
+        //           side: const BorderSide(width: 1),
+        //         ),
+        //         onPressed: (){
+        //           // draw polyline
+
+        //           Navigator.pop(context);
+        //         },
+        //         child: const Text("See Route"),
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     ),
   );
