@@ -12,7 +12,7 @@ class _ProfileScreenState extends State<ProfileScreen>{
   @override 
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: appThemeBrightness == Brightness.dark ? Colors.black : Colors.white,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -21,7 +21,6 @@ class _ProfileScreenState extends State<ProfileScreen>{
               userModelCurrentInfo!.name!,
               style: const TextStyle(
                 fontSize: 50,
-                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -30,7 +29,6 @@ class _ProfileScreenState extends State<ProfileScreen>{
               height: 20,
               width: 200,
               child: Divider(
-                color: Colors.white,
                 height: 2,
                 thickness: 2,
               ),

@@ -1,3 +1,4 @@
+import 'package:csun_user/global/global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,7 +11,7 @@ class _AboutScreenState extends State<AboutScreen>{
   @override 
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: appThemeBrightness == Brightness.dark ? Colors.black : Colors.white,
       body: ListView(
         children: [
           Container(
@@ -24,12 +25,12 @@ class _AboutScreenState extends State<AboutScreen>{
 
           Column(
             children: [
-              const Text(
+              Text(
                 "C-Shuttle",
                 style: TextStyle(
                   fontSize: 25,
-                  color: Colors.white54,
                   fontWeight: FontWeight.bold,
+                  color: appThemeBrightness == Brightness.dark ? Colors.white70 : Colors.black87,
                 ),
               ),
 
@@ -43,7 +44,6 @@ class _AboutScreenState extends State<AboutScreen>{
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white54,
                   // fontWeight: FontWeight.bold,
                 ),
               ),

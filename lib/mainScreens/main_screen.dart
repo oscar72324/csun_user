@@ -507,8 +507,11 @@ class _MainScreenState extends State<MainScreen> {
               newGoogleMapController = controller;
 
               // for black theme Google Map
-              blackThemeGoogleMap();
-
+              if(MediaQuery.of(context).platformBrightness == Brightness.dark){
+                blackThemeGoogleMap();
+                appThemeBrightness = Brightness.dark;
+              }
+              
                 setState(() {
                   bottomPaddingOfMap = 240;
                 });
@@ -588,9 +591,9 @@ class _MainScreenState extends State<MainScreen> {
               duration: const Duration(milliseconds: 120),
               child: Container(
                 height: searchLocationContainerHeight,
-                decoration: const BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: appThemeBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),
@@ -677,8 +680,10 @@ class _MainScreenState extends State<MainScreen> {
                                           .userDropOffLocation!
                                           .locationName!)
                                       : "Where to?",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 14),
+                                  style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                    ),
                                 ),
                               ],
                             ),
@@ -928,10 +933,7 @@ class _MainScreenState extends State<MainScreen> {
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
         content: const Text("Don't walk alone!\nContact Matador Patrol for a safety escort"),
-        contentTextStyle: const TextStyle(
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.black,
+        backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
@@ -960,10 +962,7 @@ class _MainScreenState extends State<MainScreen> {
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
         content: const Text("The housing shuttle can bring you to/from the dorms, F10 parking lot, and campus"),
-        contentTextStyle: const TextStyle(
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.black,
+        backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
@@ -993,10 +992,7 @@ class _MainScreenState extends State<MainScreen> {
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
         content: const Text("The housing shuttle route is currently showing"),
-        contentTextStyle: const TextStyle(
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.black,
+        backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
@@ -1019,10 +1015,7 @@ class _MainScreenState extends State<MainScreen> {
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
         content: const Text("The shuttle is not running today"),
-        contentTextStyle: const TextStyle(
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.black,
+        backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(

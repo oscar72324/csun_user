@@ -16,8 +16,14 @@ void main() async {
         child: MaterialApp(
           title: 'Shuttle Nav',
           theme: ThemeData(
+            brightness: Brightness.light,
             primarySwatch: Colors.red,
           ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            primarySwatch: Colors.red,
+          ),
+          themeMode: ThemeMode.system,
           home: const MySplashScreen(),
           debugShowCheckedModeBanner: false,
         ),
@@ -41,6 +47,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Key key = UniqueKey();
+
   void restartApp() {
     setState(() {
       key = UniqueKey();

@@ -41,7 +41,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
   Widget build(BuildContext context) {
     return Material(
       child: Container(
-        color: Colors.black,
+        // color: Colors.black,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -54,7 +54,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
                 "Shuttle",
                 style: TextStyle(
                     fontSize: 24,
-                    color: Colors.white,
+                    // color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
             ],

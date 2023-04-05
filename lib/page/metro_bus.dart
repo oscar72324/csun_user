@@ -105,7 +105,6 @@ class Metro extends StatelessWidget{
                         child: const Text(
                           "Train",
                           style: TextStyle(
-                            color: Colors.black,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -118,9 +117,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "101",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -129,9 +125,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "104",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -140,9 +133,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "103",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -151,9 +141,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "A761",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -162,9 +149,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "108",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -173,9 +157,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "A770",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -184,9 +165,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "110",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                     ],
@@ -202,7 +180,6 @@ class Metro extends StatelessWidget{
                         child: const Text(
                           "Arrival Time",
                           style: TextStyle(
-                            color: Colors.black,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -215,9 +192,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "6:52 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -226,9 +200,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "7:06 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -237,9 +208,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "7:30 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -248,9 +216,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "7:55 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -259,9 +224,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "8:27 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -270,9 +232,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "8:58 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -281,9 +240,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "9:16 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                     ],
@@ -299,7 +255,6 @@ class Metro extends StatelessWidget{
                         child: const Text(
                           "Departure Time",
                           style: TextStyle(
-                            color: Colors.black,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -312,9 +267,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "6:52 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -323,9 +275,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "7:06 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -334,9 +283,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "7:30 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -345,9 +291,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "7:55 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -356,9 +299,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "8:27 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -367,9 +307,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "8:58 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -378,9 +315,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "9:16 am",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                     ],
@@ -445,7 +379,6 @@ class Metro extends StatelessWidget{
                         child: const Text(
                           "Train",
                           style: TextStyle(
-                            color: Colors.black,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -458,9 +391,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "116",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -469,9 +399,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "A777",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -480,9 +407,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "115",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -491,9 +415,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "117",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -502,9 +423,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "118",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -513,9 +431,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "119",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                     ],
@@ -531,7 +446,6 @@ class Metro extends StatelessWidget{
                         child: const Text(
                           "Shuttle Departs",
                           style: TextStyle(
-                            color: Colors.black,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -544,9 +458,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "2:28 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -555,9 +466,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "3:30 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -566,9 +474,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "3:30 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -577,9 +482,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "4:45 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -588,9 +490,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "5:15 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -599,9 +498,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "5:30 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                     ],
@@ -617,7 +513,6 @@ class Metro extends StatelessWidget{
                         child: const Text(
                           "Train Departs",
                           style: TextStyle(
-                            color: Colors.black,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -630,9 +525,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "2:51 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -641,9 +533,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "3:55 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -652,9 +541,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "4:15 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -663,9 +549,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "5:06 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -674,9 +557,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "5:36 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                       const SizedBox(
@@ -685,9 +565,6 @@ class Metro extends StatelessWidget{
                       Container(
                         child: const Text(
                           "5:48 pm",
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
                         ),
                       ),
                     ],
