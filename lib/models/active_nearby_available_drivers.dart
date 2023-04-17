@@ -4,7 +4,7 @@ class ActiveNearbyAvailableDrivers{
   double? locationLongitude;
 
   ActiveNearbyAvailableDrivers({
-    this. driverId,
+    this.driverId,
     this.locationLatitude,
     this.locationLongitude
   });

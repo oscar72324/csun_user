@@ -121,6 +121,13 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
             ),
           ),
+          // light/dark mode toggle button
+          ElevatedButton(
+            onPressed: () {
+              currentTheme.switchTheme();
+            },
+            child: null,
+          ),
         ],
       ),
     );

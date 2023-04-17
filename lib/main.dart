@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'global/global.dart';
 import 'infoHandler/app_info.dart';
 
 void main() async {
@@ -23,7 +24,7 @@ void main() async {
             brightness: Brightness.dark,
             primarySwatch: Colors.red,
           ),
-          themeMode: ThemeMode.system,
+          themeMode: currentTheme.currentTheme(),
           home: const MySplashScreen(),
           debugShowCheckedModeBanner: false,
         ),
@@ -51,6 +52,17 @@ class _MyAppState extends State<MyApp> {
   void restartApp() {
     setState(() {
       key = UniqueKey();
+    });
+  }
+
+  @override 
+  void initState(){
+    super.initState();
+    currentTheme.addListener((){
+      print('Changes');
+      setState(() {
+        
+      });
     });
   }
 
