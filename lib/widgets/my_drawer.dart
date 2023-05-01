@@ -26,7 +26,7 @@ class _MyDrawerState extends State<MyDrawer> {
           //drawer header
           Container(
             height: 165,
-            color: Colors.white,
+            // color: Colors.white,
             child: DrawerHeader(
               decoration: const BoxDecoration(color: Colors.red),
               child: Row(
@@ -122,12 +122,12 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
           ),
           // light/dark mode toggle button
-          ElevatedButton(
-            onPressed: () {
-              currentTheme.switchTheme();
-            },
-            child: null,
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     currentTheme.switchTheme();
+          //   },
+          //   child: null,
+          // ),
         ],
       ),
     );

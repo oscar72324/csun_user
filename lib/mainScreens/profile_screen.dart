@@ -19,9 +19,10 @@ class _ProfileScreenState extends State<ProfileScreen>{
           children: [
             Text(
               userModelCurrentInfo!.name!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
+                color: appThemeBrightness == Brightness.dark ? Colors.white : Colors.black,
               ),
             ),
 

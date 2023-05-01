@@ -13,8 +13,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import '../widgets/navigation_drawer_widget.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
+import '../widgets/navigation_drawer_widget.dart';
 import '../assistants/assistant_methods.dart';
 import '../global/global.dart';
 import '../infoHandler/app_info.dart';
@@ -376,11 +377,12 @@ class _MainScreenState extends State<MainScreen> {
     createActiveNearbyDriverIconMarker();
 
     return Scaffold(
+      backgroundColor: appThemeBrightness == Brightness.dark ? Colors.black : Colors.white,
       extendBodyBehindAppBar: true,
       key: sKey,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.person),
+          icon: Icon(Icons.person, color: appThemeBrightness == Brightness.dark ? Colors.white : Colors.black,),
           onPressed: () {
             sKey.currentState!.openDrawer();
           },
@@ -390,7 +392,7 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      drawer: Container(
+      drawer: SizedBox(
         width: 310,
         child: Theme(
           data: Theme.of(context).copyWith(canvasColor: Colors.red),
@@ -418,16 +420,19 @@ class _MainScreenState extends State<MainScreen> {
               _controllerGoogleMap.complete(controller);
               newGoogleMapController = controller;
 
+              appThemeBrightness = MediaQuery.of(context).platformBrightness;
+
               // for black theme Google Map
-              if(MediaQuery.of(context).platformBrightness == Brightness.dark){
+              if(appThemeBrightness == Brightness.dark){
                 blackThemeGoogleMap();
-                appThemeBrightness = Brightness.dark;
               }
               
                 setState(() {
                   bottomPaddingOfMap = 240;
                 });
                 // locateUserPosition();
+                // Geofire.initialize("activeDrivers");
+                // initializeGeofireListener();
               },
             ),
 
@@ -460,8 +465,12 @@ class _MainScreenState extends State<MainScreen> {
             left: 10,
             child: FloatingActionButton(
               backgroundColor: Colors.redAccent,
-              onPressed:() {
+              onPressed:() async {
                 // call 911
+                const emergencyCall = 'tel:911';
+                if(await canLaunchUrlString(emergencyCall)){
+                  await launchUrlString(emergencyCall);
+                }
               },
               child: const Icon(
                 Icons.contact_phone_rounded,
@@ -516,41 +525,41 @@ class _MainScreenState extends State<MainScreen> {
                   child: Column(
                     children: [
                       //from
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.add_location_alt_outlined,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(
-                            width: 12.0,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "From",
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 12),
-                              ),
-                              Text(
-                                Provider.of<AppInfo>(context).userPickUpLocation !=null
-                                    ? "${(Provider.of<AppInfo>(context).userPickUpLocation!.locationName!).substring(0, 24)}..."
-                                    : "Not getting address",
-                                style: const TextStyle(
-                                    color: Colors.grey, fontSize: 14),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     const Icon(
+                      //       Icons.add_location_alt_outlined,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     const SizedBox(
+                      //       width: 12.0,
+                      //     ),
+                      //     Column(
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       children: [
+                      //         const Text(
+                      //           "From",
+                      //           style:
+                      //               TextStyle(color: Colors.grey, fontSize: 12),
+                      //         ),
+                      //         Text(
+                      //           Provider.of<AppInfo>(context).userPickUpLocation !=null
+                      //               ? "${(Provider.of<AppInfo>(context).userPickUpLocation!.locationName!).substring(0, 24)}..."
+                      //               : "Not getting address",
+                      //           style: const TextStyle(
+                      //               color: Colors.grey, fontSize: 14),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ],
+                      // ),
 
-                        const SizedBox(height: 10),
-                        const Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Colors.grey,
-                        ),
+                        // const SizedBox(height: 10),
+                        // const Divider(
+                        //   height: 1,
+                        //   thickness: 1,
+                        //   color: Colors.grey,
+                        // ),
                         const SizedBox(height: 16),
 
                       // to location
@@ -579,11 +588,11 @@ class _MainScreenState extends State<MainScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "To",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 12),
-                                ),
+                                // const Text(
+                                //   "To",
+                                //   style: TextStyle(
+                                //       color: Colors.grey, fontSize: 12),
+                                // ),
                                 Text(
                                   Provider.of<AppInfo>(context)
                                               .userDropOffLocation !=
@@ -591,10 +600,11 @@ class _MainScreenState extends State<MainScreen> {
                                       ? (Provider.of<AppInfo>(context)
                                           .userDropOffLocation!
                                           .locationName!)
-                                      : "Where to?",
-                                  style: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
+                                      : "Search for a location on campus",
+                                  style: TextStyle(
+                                      // color: Colors.grey,
+                                      color: appThemeBrightness == Brightness.dark ? Colors.white : Colors.black,
+                                      fontSize: 16,
                                     ),
                                 ),
                               ],
@@ -618,7 +628,7 @@ class _MainScreenState extends State<MainScreen> {
                           child: Text(routeButtonText),
                           onPressed: () {
                             // on press
-                            if(routeButtonText == "Start route"){
+                            if(routeButtonText == "Start route" || checkShuttleToggle == false){
                               drawShuttlePolyline();
                               setState(() {
                                 routeButtonText = "End route";
@@ -660,38 +670,40 @@ class _MainScreenState extends State<MainScreen> {
       if (map != null) {
         var callBack = map['callBack'];
 
-        switch (callBack) {
-          // when driver goes online
+        switch (callBack)
+        {
+          //whenever any driver become active/online
           case Geofire.onKeyEntered:
             ActiveNearbyAvailableDrivers activeNearbyAvailableDriver = ActiveNearbyAvailableDrivers();
-            activeNearbyAvailableDriver.driverId = map['key'];
             activeNearbyAvailableDriver.locationLatitude = map['latitude'];
             activeNearbyAvailableDriver.locationLongitude = map['longitude'];
+            activeNearbyAvailableDriver.driverId = map['key'];
             GeoFireAssistant.activeNearbyAvailableDriversList.add(activeNearbyAvailableDriver);
-
-            if(activeNearbyDriverKeysLoaded == true){
+            if(activeNearbyDriverKeysLoaded == true)
+            {
               displayActiveDriversOnUserMap();
             }
-
             break;
 
-          // when driver goes offline
+          //whenever any driver become non-active/offline
           case Geofire.onKeyExited:
             GeoFireAssistant.deleteOfflineDriverFromList(map['key']);
+            displayActiveDriversOnUserMap();
             break;
 
-          // when driver moves
+          //whenever driver moves - update driver location
           case Geofire.onKeyMoved:
             ActiveNearbyAvailableDrivers activeNearbyAvailableDriver = ActiveNearbyAvailableDrivers();
-            activeNearbyAvailableDriver.driverId = map['key'];
             activeNearbyAvailableDriver.locationLatitude = map['latitude'];
             activeNearbyAvailableDriver.locationLongitude = map['longitude'];
+            activeNearbyAvailableDriver.driverId = map['key'];
             GeoFireAssistant.updateAvailableDriverLocation(activeNearbyAvailableDriver);
             displayActiveDriversOnUserMap();
             break;
-          
-          // display online drivers on user map
+
+          //display those online/active drivers on user's map
           case Geofire.onGeoQueryReady:
+            activeNearbyDriverKeysLoaded = true;
             displayActiveDriversOnUserMap();
             break;
         }
@@ -710,13 +722,16 @@ class _MainScreenState extends State<MainScreen> {
       for(ActiveNearbyAvailableDrivers eachDriver in GeoFireAssistant.activeNearbyAvailableDriversList){
         LatLng eachDriverActivePosition = LatLng(eachDriver.locationLatitude!, eachDriver.locationLongitude!);
         Marker marker = Marker(
-          markerId: MarkerId(eachDriver.driverId!),
+          markerId: MarkerId("driver" + eachDriver.driverId!),
           position: eachDriverActivePosition,
           icon: activeNearbyIcon!,
           rotation: 360,
         );
 
         driversMarkerSet.add(marker);
+
+        // added for test
+        print(eachDriver);
       }
 
       setState(() {
@@ -927,12 +942,13 @@ class _MainScreenState extends State<MainScreen> {
   void showSafetyEscortBanner(){
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
-        content: const Text("Don't walk alone!\nContact Matador Patrol for a safety escort"),
+        content: Text("Don't walk alone!\nContact Matador Patrol for a safety escort", style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.white : Colors.black)),
         backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
-          child: Icon(Icons.directions_walk_rounded),
+          backgroundColor: Colors.red,
+          child: Icon(Icons.directions_walk_rounded, color: Colors.white),
         ),
         actions: [
           ElevatedButton(
@@ -956,12 +972,13 @@ class _MainScreenState extends State<MainScreen> {
   void showWeekdayShuttleBanner(){
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
-        content: const Text("The housing shuttle can bring you to/from the dorms, F10 parking lot, and campus"),
+        content: Text("The housing shuttle can bring you to/from the dorms, F10 parking lot, and campus", style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.white : Colors.black)),
         backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
-          child: Icon(Icons.directions_bus_filled_rounded),
+          backgroundColor: Colors.red,
+          child: Icon(Icons.directions_bus_filled_rounded, color: Colors.white),
         ),
         actions: [
           ElevatedButton(
@@ -986,12 +1003,12 @@ class _MainScreenState extends State<MainScreen> {
   void showHideShuttleRouteBanner(){
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
-        content: const Text("The housing shuttle route is currently showing"),
+        content: Text("The housing shuttle route is currently showing", style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.white : Colors.black)),
         backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
-          child: Icon(Icons.directions_bus_filled_rounded),
+          child: Icon(Icons.directions_bus_filled_rounded, color: Colors.white),
         ),
         actions: [
           ElevatedButton(
@@ -1009,12 +1026,13 @@ class _MainScreenState extends State<MainScreen> {
   void showWeekendShuttleBanner(){
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
-        content: const Text("The shuttle is not running today"),
+        content: Text("The shuttle is not running today", style: TextStyle(color: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.white : Colors.black)),
         backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         elevation: 10,
         forceActionsBelow: true,
         leading: const CircleAvatar(
-          child: Icon(Icons.bus_alert_rounded),
+          backgroundColor: Colors.red,
+          child: Icon(Icons.bus_alert_rounded, color: Colors.white),
         ),
         actions: [
           ElevatedButton(

@@ -4,6 +4,8 @@ import 'package:csun_user/models/predicted_places.dart';
 import 'package:csun_user/widgets/place_prediction_tile.dart';
 import 'package:flutter/material.dart';
 
+import '../global/global.dart';
+
 class SearchPlacesScreen extends StatefulWidget{
   @override
   _SearchPlacesScreenState createState() => _SearchPlacesScreenState();
@@ -33,25 +35,24 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>{
           placesPredictedList = placePredictionsList;
         });
       }
-      //print("this is response/result: ");
-      //print(responseAutoCompleteSearch);
+      print("this is response/result: ");
+      print(responseAutoCompleteSearch);
     }
   }
 
   @override 
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: appThemeBrightness == Brightness.dark ? Colors.black : Colors.white,
       body: Column(
         children: [
           // search place ui
           Container(
             height: 180,
-            decoration: const BoxDecoration(
-              color: Colors.black54,
+            decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: Colors.white54,
+                  color: appThemeBrightness == Brightness.dark ? Colors.black54 : Colors.white54,
                   blurRadius: 8,
                   spreadRadius: 0.5,
                   offset: Offset(0.7, 0.7),
@@ -76,7 +77,7 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>{
                       ),
 
                       const Center(
-                        child: const Text(
+                        child: Text(
                           "Search & Set Drop Off Location",
                           style: TextStyle(
                             fontSize: 18.0,
@@ -92,9 +93,9 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>{
 
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.adjust_sharp,
-                        color: Colors.grey,
+                        color: appThemeBrightness == Brightness.dark ? Colors.white54 : Colors.black54,
                         ),
 
                         const SizedBox(height: 18),
@@ -106,12 +107,13 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>{
                               onChanged: (valueTyped){
                                 findPlaceAutoCompleteSearch(valueTyped);
                               },
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "Search here...",
-                                fillColor: Colors.white54,
+                                hintStyle: TextStyle(color: appThemeBrightness == Brightness.dark ? Colors.white70 : Colors.black87),
+                                fillColor: appThemeBrightness == Brightness.dark ? Colors.white12 : Colors.black12,
                                 filled: true,
                                 border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(
+                                contentPadding: const EdgeInsets.only(
                                   left: 11.0,
                                   top: 0.0,
                                   bottom: 0.0,
@@ -129,11 +131,11 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>{
           ),
 
           // display place predictions result
-          (placesPredictedList.length > 0)
+          (placesPredictedList.isNotEmpty)
           ? Expanded(
             child: ListView.separated(
               itemCount: placesPredictedList.length,
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (context, index){
                 return PlacePredictionTileDesign(
                   predictedPlaces: placesPredictedList[index],
@@ -142,7 +144,7 @@ class _SearchPlacesScreenState extends State<SearchPlacesScreen>{
               separatorBuilder: (BuildContext context, int index){
                 return const Divider(
                   height: 1,
-                  color: Colors.white,
+                  color: Colors.grey,
                   thickness: 1,
                 );
               },

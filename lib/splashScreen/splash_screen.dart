@@ -42,6 +42,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
     return Material(
       child: Container(
         // color: Colors.black,
+        color: MediaQuery.of(context).platformBrightness == Brightness.dark ? Colors.black87 : Colors.white70,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
