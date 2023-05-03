@@ -50,10 +50,17 @@ class _MainScreenState extends State<MainScreen> {
   double bottomPaddingOfMap = 0;
 
   List<LatLng> pLineCoordinatesList = [];
-  Set<Polyline> polyLineSet = {};
+  Set<Polyline> pLineSet = {};
+  Set<Polyline> driverPolyLineSet = {};
+  Set<Polyline> shuttlePolylineSet = {};
 
-  Set<Marker> markersSet = {};
-  Set<Circle> circleSet = {};
+  
+  Set<Marker> pLineMarkerSet = {};
+  Set<Circle> pLineCircleSet = {};
+  Set<Marker> driverMarkerSet = {};
+  Set<Circle> driverCircleSet = {};
+  Set<Marker> shuttleMarkerSet = {};
+  Set<Circle> shuttleCircleSet = {};
 
   String userName = userModelCurrentInfo!.name!;
   String userEmail = userModelCurrentInfo!.email!;
@@ -413,9 +420,9 @@ class _MainScreenState extends State<MainScreen> {
             zoomGesturesEnabled: true,
             initialCameraPosition: _center,
             cameraTargetBounds: CameraTargetBounds(LatLngBounds(northeast: LatLng(nLat, nLong), southwest: LatLng(sLat, sLong))),
-            polylines: polyLineSet,
-            markers: markersSet,
-            circles: circleSet,
+            polylines: pLineSet,
+            markers: pLineMarkerSet,
+            circles: pLineCircleSet,
             onMapCreated: (GoogleMapController controller) {
               _controllerGoogleMap.complete(controller);
               newGoogleMapController = controller;
@@ -635,8 +642,8 @@ class _MainScreenState extends State<MainScreen> {
                               });
                             }
                             else{
-                              polyLineSet.clear();
-                              markersSet.clear();
+                              pLineMarkerSet.clear();
+                              pLineCircleSet.clear();
                               setState(() {
                                 routeButtonText = "Start route";
                               });
@@ -714,8 +721,8 @@ class _MainScreenState extends State<MainScreen> {
 
   displayActiveDriversOnUserMap(){
     setState(() {
-      markersSet.clear();
-      circleSet.clear();
+      driverMarkerSet.clear();
+      driverCircleSet.clear();
 
       Set<Marker> driversMarkerSet = Set<Marker>();
 
@@ -728,14 +735,15 @@ class _MainScreenState extends State<MainScreen> {
           rotation: 360,
         );
 
-        driversMarkerSet.add(marker);
+        // driversMarkerSet.add(marker);
+        pLineMarkerSet.add(marker);
 
         // added for test
         print(eachDriver);
       }
 
       setState(() {
-        markersSet = driversMarkerSet;
+        // driverMarkerSet = driversMarkerSet;
       });
     });
   }
@@ -874,9 +882,13 @@ class _MainScreenState extends State<MainScreen> {
   
   void drawShuttlePolyline() async {
     setState(() {
-      polyLineSet.clear();
-      markersSet.clear();
-      circleSet.clear();
+      // shuttlePolylineSet.clear();
+      // shuttleMarkerSet.clear();
+      // shuttleCircleSet.clear();
+
+      pLineSet.clear();
+      pLineMarkerSet.clear();
+      pLineCircleSet.clear();
     });
 
     checkShuttleToggle = true;
@@ -899,7 +911,7 @@ class _MainScreenState extends State<MainScreen> {
       color: Colors.yellow,
     );
     setState(() {
-      polyLineSet.add(shuttlePolyline);
+      pLineSet.add(shuttlePolyline);
     });
     final Marker spiritPlaza = Marker(
       markerId: const MarkerId('spiritPlaza'),
@@ -923,20 +935,43 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     setState(() {
-      markersSet.add(spiritPlaza);
-      markersSet.add(f10Parking);
-      markersSet.add(housingStop);
+      // shuttleMarkerSet.add(spiritPlaza);
+      // shuttleMarkerSet.add(f10Parking);
+      // shuttleMarkerSet.add(housingStop);
+
+      pLineMarkerSet.add(spiritPlaza);
+      pLineMarkerSet.add(f10Parking);
+      pLineMarkerSet.add(housingStop);
     });
   }
 
   void hideShuttlePolyline(){
     setState(() {
-      polyLineSet.clear();
-      markersSet.clear();
-      circleSet.clear();
+      // shuttlePolylineSet.clear();
+      // shuttleMarkerSet.clear();
+      // shuttleCircleSet.clear();
+
+      pLineSet.clear();
+      pLineMarkerSet.clear();
+      pLineCircleSet.clear();
     });
 
     checkShuttleToggle = false;
+  }
+
+  void toggleShuttleAndDriver(){
+    if(checkShuttleToggle == true){
+      setState(() {
+        pLineSet.clear();
+        pLineMarkerSet.clear();
+        pLineCircleSet.clear();
+      });
+    }
+    else{
+      setState(() {
+
+      });
+    }
   }
 
   void showSafetyEscortBanner(){
@@ -987,14 +1022,14 @@ class _MainScreenState extends State<MainScreen> {
                 ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
               },
           ),
-          ElevatedButton(
-            child: const Text("See Route"),
-              onPressed: (){
-                drawShuttlePolyline();
-                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                showHideShuttleRouteBanner();
-              },
-          ),
+          // ElevatedButton(
+          //   child: const Text("See Route"),
+          //     onPressed: (){
+          //       drawShuttlePolyline();
+          //       ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+          //       showHideShuttleRouteBanner();
+          //     },
+          // ),
         ],
       ),
     );
